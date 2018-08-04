@@ -1,0 +1,10 @@
+.tile {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+}
+
+#player {
+    background: #0D8691;
+}
+

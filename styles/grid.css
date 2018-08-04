@@ -1,0 +1,15 @@
+#grid {
+    background: #1f1f2e;
+    height: 1000px;
+    width: 1000px;
+    position: relative;
+    margin: auto;
+}
+
+#debugTileA {
+    background: #656570;
+}
+
+#debugTileB {
+    background: #30304b;
+}

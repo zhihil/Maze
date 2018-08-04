@@ -1,29 +1,39 @@
+//////////////////////////////////////////////////////////////////////
+///
+/// player.js
+///
+/// Provides a model for the player tile.
+///
+//////////////////////////////////////////////////////////////////////
+
 //////////////////////// Player DOM ////////////////////////
 
 function Player()
 {
     /// Constructor for a DOM Node representing the player.
     
-    var player = $(MakeNode());
+    var player = $(GameActor());
     player.attr("id", "player")
-        .addClass("tile")
         .css("top", "0px")
-        .css("left", "0px");
+        .css("left", "0px")
+        .css("z-index", "10");
+    player.appendTo("#grid");
     return player[0];
 }
 
 //////////////////////// Player Model ////////////////////////
 
 var playerModel = {
-    node: player
+    name: "Theseus",
+    node: Player()
 };
 
 playerModel.getPosition = function() {
     /// Gets the player's position in terms of coordinates on #grid
     /// getPosition : void -> { int, int }
 
-    var rect = player.getBoundingClientRect();
-    return getCoordinates(rect.left, rect.top);
+    var rect = this.node.getBoundingClientRect();
+    return gridModel.getCoordinates(rect.left, rect.top);
 }
 
 playerModel.isValidMove = function(targetX, targetY) {
@@ -41,5 +51,3 @@ playerModel.isValidMove = function(targetX, targetY) {
         return true;
     return false;
 }
-
-var player = Player();

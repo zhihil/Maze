@@ -1,8 +1,17 @@
-function MakeNode()
+//////////////////////////////////////////////////////////////////////
+///
+/// gameActors.js
+///
+/// Defines the GameActor object, which is a parent class for all
+///     game pieces in Maze.
+///
+//////////////////////////////////////////////////////////////////////
+
+function GameActor()
 {
-    /// Constructor for a DOM Node representing a generic tile on the board.
+    /// Constructor for a DOM Node representing a generic tile.
 
     var newNode = document.createElement("div");
-    grid.appendChild(newNode);
+    newNode.className = "tile";
     return newNode;
 }

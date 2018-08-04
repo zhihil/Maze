@@ -1,13 +1,25 @@
-function getMoveVector(endVector, startVector) {
+//////////////////////////////////////////////////////////////////////
+///
+/// calculations.js
+/// General library of functions that do not belong to any particular
+///   script. These tend to be functions used for calculations such as
+///   getDiffVector() which calculates the difference between a start
+///   and an end vector.
+///
+//////////////////////////////////////////////////////////////////////
+
+function getDiffVector(endVector, startVector) {
     /// Calculates the difference vector between endVector and startVector.
     /// getMoveVector: [int, int] [int, int] -> [int, int]
 
     if (endVector.length != startVector.length)
         return Error("getMoveVector() was given two vectors of unmatching length.");
+
     var diffVector = new Array(endVector.length);
     for (var i = 0; i < endVector.length; ++i)
     {
         diffVector[i] = endVector[i] - startVector[i];
     }
+    
     return diffVector;
 }
