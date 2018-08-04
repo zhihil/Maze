@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>M A Z E</title>
-        <link href="styles/main.css" rel="stylesheet" type="text/css">
+        <link href="../styles/main.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <div id="grid"></div>
@@ -23,10 +23,17 @@
                 <img id="minotaur_image" src="http://streamfinancial.com.au/wp-content/uploads/2015/02/THESEUS_AND_THE_MINOTAUR_by_aka_maelstrom.jpg"
                     alt="What it feels like to play M A Z E">
                 <p><b>Game Dramatization</b></p>
+                <audio src="minotaurroar.wav" autoplay="true"></audio>
             </div>
         </div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="scripts/gameActors.js"></script>
-        <script src="scripts/main.js"></script>
+
+        <script src="../models/calculations.js"></script>
+        <script src="../models/gameActors.js"></script>
+        <script src="../models/player.js"></script>
+        <script src="../models/players.js"></script>
+
+        <script src="../controllers/main.js"></script>
     </body>
 </html>
