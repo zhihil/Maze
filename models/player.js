@@ -90,5 +90,5 @@ playerModel.playerMove = function(targetX, targetY, direcX, direcY) {
             window.clearInterval(playerModel.anim);
             playerModel.anim = null;
         }
-    }, 100);
+    }, 50);
 }
