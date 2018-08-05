@@ -15,7 +15,6 @@ $("#grid").on("click", function(event) {
     if (playerModel.isValidMove(target.x, target.y))
     {
         var diff = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
-        player.style.left = parseFloat(player.style.left) + (50 * diff[0]) + "px";
-        player.style.top  = parseFloat(player.style.top) + (50 * diff[1]) + "px";
+        playerModel.playerMove(target.x, target.y, diff[0], diff[1]);
     }
 })

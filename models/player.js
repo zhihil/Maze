@@ -25,7 +25,9 @@ function Player()
 
 var playerModel = {
     name: "Theseus",
-    node: Player()
+    node: Player(),
+    moving: false,
+    anim: null
 };
 
 playerModel.getPosition = function() {
@@ -50,4 +52,31 @@ playerModel.isValidMove = function(targetX, targetY) {
     else if (diffX == 0 && Math.abs(diffY) == 1)
         return true;
     return false;
+}
+
+
+//////////////////////// Player Animations ////////////////////////
+
+/// These animations are played by using SetInterval()
+
+playerModel.playerMove = function(targetX, targetY, direcX, direcY) {
+    this.moving = true;
+
+    this.anim = window.setInterval(function() {
+        var playerPos = this.getPosition();
+        if (playerPos.x != targetX)
+        {
+            this.node.style.left = parseFloat(this.node.style.left) + (5 * direcX) + "px";
+        }
+        else if (playerPos.y != targetY)
+        {
+            this.node.style.left = parseFloat(this.node.style.left) + (5 * direcY) + "px";
+        }
+        else 
+        {
+            this.moving = false;
+            window.clearInterval(this.anim);
+            this.anim = null;
+        }
+    }, 100);
 }
