@@ -23,10 +23,10 @@ gridModel.getCoordinates = function(posX, posY){
     /// requires: posX >= xGridOffset, posY >= yGridOffset
 
     if (this.node == undefined) this.node = document.getElementById("grid");
-    
-    let rect = this.node.getBoundingClientRect();
-    let xGridOffset = rect.left;
-    let yGridOffset = rect.top;
+
+    const rect = this.node.getBoundingClientRect();
+    const xGridOffset = rect.left;
+    const yGridOffset = rect.top;
 
     return {
         x : Math.floor((posX - xGridOffset) / this.tileLength),

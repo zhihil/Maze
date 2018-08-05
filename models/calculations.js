@@ -8,6 +8,8 @@
 ///
 //////////////////////////////////////////////////////////////////////
 
+let epsilon = 0.0000001;
+
 function getDiffVector(endVector, startVector) {
     /// Calculates the difference vector between endVector and startVector.
     /// getMoveVector: [int, int] [int, int] -> [int, int]
