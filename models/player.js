@@ -61,22 +61,21 @@ playerModel.isValidMove = function(targetX, targetY) {
 
 playerModel.playerMove = function(targetX, targetY, direcX, direcY) {
     this.moving = true;
-
     this.anim = window.setInterval(function() {
-        var playerPos = this.getPosition();
+        var playerPos = playerModel.getPosition();
         if (playerPos.x != targetX)
         {
-            this.node.style.left = parseFloat(this.node.style.left) + (5 * direcX) + "px";
+            playerModel.node.style.left = parseFloat(playerModel.node.style.left) + (10 * direcX) + "px";
         }
         else if (playerPos.y != targetY)
         {
-            this.node.style.left = parseFloat(this.node.style.left) + (5 * direcY) + "px";
+            playerModel.node.style.top = parseFloat(playerModel.node.style.top) + (10 * direcY) + "px";
         }
         else 
         {
-            this.moving = false;
-            window.clearInterval(this.anim);
-            this.anim = null;
+            playerModel.moving = false;
+            window.clearInterval(playerModel.anim);
+            playerModel.anim = null;
         }
     }, 100);
 }
