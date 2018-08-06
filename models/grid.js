@@ -60,5 +60,10 @@ gridModel.addActor = function(newActor, coordX, coordY) {
     if (typeof newActor != "undefined") {
         throw Error("Cannot add new actor since the tile (coordX, coordY) is occupied.");
     }
-    gridModel.actorsGrid[coordX][coordY] = newActor;
+    gridModel.actorsGrid[coordY][coordX] = newActor;
+}
+
+gridModel.isOccupied = function(x, y) {
+    /// Determines if the chosen tile (x, y) on the grid is occupied or not.
+    return gridModel.actorsGrid[y][x] != 'N';
 }

@@ -12,13 +12,14 @@ function Player()
 {
     /// Constructor for a DOM Node representing the player.
     
-    var player = $(GameActor());
-    player.attr("id", "player")
+    var $player = $(GameActor());
+    $player.attr("id", "player")
         .css("top", "0px")
         .css("left", "0px")
-        .css("z-index", "10");
-    player.appendTo("#grid");
-    return player[0];
+        .css("z-index", "10")
+        .appendTo("#grid");
+    gridModel.actorsGrid[0][0] = 'P';
+    return $player[0];
 }
 
 //////////////////////// Player Model ////////////////////////
@@ -44,6 +45,8 @@ playerModel.isValidMove = function(targetX, targetY) {
     /// isValidMove : int int -> bool
     /// requires: maxX >= targetX >= 0, maxY >= targetY >= 0
 
+    if (gridModel.isOccupied(targetX, targetY)) return false;
+    
     const playerPos = this.getPosition();
     const diffX = targetX - playerPos.x;
     const diffY = targetY - playerPos.y;
