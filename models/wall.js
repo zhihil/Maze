@@ -24,7 +24,7 @@ function Wall(x, y, src) {
     this.y = y;
 
     /// Assign a reference to the gridModel
-    gridModel.actorsGrid[y][x] = 'W';
+    gridModel.addActor('W', x, y);
 }
 
 var wall1 = Wall(1, 0, "");

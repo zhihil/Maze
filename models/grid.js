@@ -11,16 +11,14 @@
 var gridModel = {
     gridLength : 1000,
     tileLength : 50,
-    tilesPerSide : 10,
     node : document.getElementById("grid"),
 };
+gridModel.tilesPerSide = gridModel.gridLength / gridModel.tileLength;
 
 /// The actorsGrid is used to track what elements are on the grid. 
-/// List of possible values
-///     'N' - 'Null'
-///     'P' - 'Player'
-///     'M' - 'Monster' or "Minotaur"
-///     'W' - 'Wall'
+/// The elements of actorsGrid are of type "tileCode"
+
+/// List of possible values for "tileCodes" is found in gridModel.isValidTileCode()
 
 gridModel.actorsGrid = new Array(this.tilesPerSide);
 for (let i = 0; i < gridModel.tilesPerSide; ++i)
@@ -52,15 +50,53 @@ gridModel.getCoordinates = function(posX, posY){
     };
 }
 
-gridModel.addActor = function(newActor, coordX, coordY) {
-    /// Adds a newActor at (coordX, coordY) from the top-left square on the
-    ///   board.
-    /// addActor: DOMNode int int -> void
+gridModel.addActor = function(tileCode, coordX, coordY) {
+    /// Adds a newActor at (coordX, coordY), where (0, 0) is the top-left square on
+    ///   the board and the positive axis go downward and rightward.
+    /// addActor: tileCode (gridModel.isValidTileCode) int int -> void
+    /// requires: 0 <= coordX, coordY < maxNumTiles
     
-    if (typeof newActor != "undefined") {
-        throw Error("Cannot add new actor since the tile (coordX, coordY) is occupied.");
-    }
-    gridModel.actorsGrid[coordY][coordX] = newActor;
+    if (!gridModel.isValidTileCode(tileCode))
+        throw Error("gridModel.removeActor() was given an invalid tileCode");
+    if (0 > coordX)
+        throw Error("gridModel.removeActor() was given a negative x-coordinate");
+    if (coordX >= gridModel.tilesPerSide)
+        throw Error("gridModel.removeActor() was given an out-of-range x-coordinate");
+    if (0 > coordY)
+        throw Error("gridModel.removeActor() was given a negative y-coordinate");
+    if (coordY >= gridModel.tilesPerSide)
+        throw Error("gridModel.removeActor() was given an out-of-range y-coordinate");
+
+    gridModel.actorsGrid[coordY][coordX] = tileCode;
+}
+
+gridModel.isValidTileCode = function(code) {
+    /// Determines if the given code is an example of a tileCode. A valid tileCode is
+    ///   one of:
+    ///     - 'N' - Null
+    ///     - 'P' - Player
+    ///     - 'M' - Monster or Minotaur
+    ///     - 'W' - Wall
+
+    return code === 'N' || code === 'P' || code === 'M' || code === 'W';
+}
+
+gridModel.removeActor = function(coordX, coordY) {
+    /// Removes newActor at (coordX, coordY), where (0, 0) is the top-left square on
+    ///   the board and the positive axis go downward and rightward.
+    /// removeActor: int int -> void
+    /// requires: 0 <= coordX, coordY < maxNumTiles
+
+    if (0 > coordX)
+        throw Error("gridModel.removeActor() was given a negative x-coordinate");
+    if (coordX >= gridModel.tilesPerSide)
+        throw Error("gridModel.removeActor() was given an out-of-range x-coordinate");
+    if (0 > coordY)
+        throw Error("gridModel.removeActor() was given a negative y-coordinate");
+    if (coordY >= gridModel.tilesPerSide)
+        throw Error("gridModel.removeActor() was given an out-of-range y-coordinate");
+
+    gridModel.actorsGrid[coordY][coordX] = 'N';
 }
 
 gridModel.isOccupied = function(x, y) {

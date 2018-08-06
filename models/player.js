@@ -18,7 +18,7 @@ function Player()
         .css("left", "0px")
         .css("z-index", "10")
         .appendTo("#grid");
-    gridModel.actorsGrid[0][0] = 'P';
+    gridModel.addActor('P', 0, 0);
     return $player[0];
 }
 
@@ -46,7 +46,7 @@ playerModel.isValidMove = function(targetX, targetY) {
     /// requires: maxX >= targetX >= 0, maxY >= targetY >= 0
 
     if (gridModel.isOccupied(targetX, targetY)) return false;
-    
+
     const playerPos = this.getPosition();
     const diffX = targetX - playerPos.x;
     const diffY = targetY - playerPos.y;
@@ -74,21 +74,31 @@ playerModel.playerMove = function(targetX, targetY, direcX, direcY) {
     const targetLeft = targetX * gridModel.tileLength + offset.left;
     const targetTop  = targetY * gridModel.tileLength + offset.top; 
 
+    /// Get the player's origin position
+    const playerPos = playerModel.getPosition();
+
     this.anim = window.setInterval(function() {
-        const playerPos = playerModel.node.getBoundingClientRect();
-        if (Math.abs(playerPos.left - targetLeft) >= epsilon)
+        const playerRect = playerModel.node.getBoundingClientRect();
+        if (Math.abs(playerRect.left - targetLeft) >= epsilon)
         {
             playerModel.node.style.left = parseFloat(playerModel.node.style.left) + (movespeed * direcX) + "px";
         }
-        else if (Math.abs(playerPos.top - targetTop) >= epsilon)
+        else if (Math.abs(playerRect.top - targetTop) >= epsilon)
         {
             playerModel.node.style.top = parseFloat(playerModel.node.style.top) + (movespeed * direcY) + "px";
         }
         else 
         {
+            /// Make sure the player is in the proper position on the screen.
             playerModel.node.style.left = targetLeft;
             playerModel.node.style.top  = targetTop;
 
+            /// Make sure the player is in the proper position programmatically. 
+            gridModel.removeActor(playerPos.x, playerPos.y);
+            const newPos = playerModel.getPosition();
+            gridModel.addActor('P', newPos.x, newPos.y);
+
+            /// Set relevant logic variables.
             playerModel.moving = false;
             window.clearInterval(playerModel.anim);
             playerModel.anim = null;
