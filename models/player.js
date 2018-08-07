@@ -39,6 +39,16 @@ playerModel.getPosition = function() {
     return gridModel.getCoordinates(rect.left, rect.top);
 }
 
+playerModel.setPosition = function(coordX, coordY) {
+    /// Sets the player's graphical position to the place corresponding
+    ///   with the given (coordX, coordY).
+    /// setPosition : int int -> void
+    let offsetRect = gridModel.node.getBoundingClientRect();
+    playerModel.node.style.left = 50 * coordX + "px";
+    playerModel.node.style.top  = 50 * coordY + "px";
+
+}
+
 playerModel.isValidMove = function(targetX, targetY) {
     /// Determines if the target position (targetX, targetY) is a valid
     ///   place to go to, based on the player's current position.

@@ -6,7 +6,7 @@
 ///
 //////////////////////////////////////////////////////////////////////
 
-function Wall(x, y, src) {
+function Wall(x, y) {
     /// Constructor for the a Wall game actor.
 
     /// Create the DOM Node
@@ -16,7 +16,6 @@ function Wall(x, y, src) {
         .css("left", (50 * x) + "px")
         .css("top", (50 * y) + "px")
         .css("z-index", "10")
-        .attr("src", src)
         .appendTo("#grid");
     
     /// Set the Wall's internal coordinates.
