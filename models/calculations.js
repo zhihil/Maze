@@ -17,8 +17,8 @@ function getDiffVector(endVector, startVector) {
     if (endVector.length != startVector.length)
         return Error("getMoveVector() was given two vectors of unmatching length.");
 
-    var diffVector = new Array(endVector.length);
-    for (var i = 0; i < endVector.length; ++i)
+    let diffVector = new Array(endVector.length);
+    for (let i = 0; i < endVector.length; ++i)
     {
         diffVector[i] = endVector[i] - startVector[i];
     }

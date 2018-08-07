@@ -11,7 +11,7 @@ function GameActor()
 {
     /// Constructor for a DOM Node representing a generic tile.
 
-    var newNode = document.createElement("div");
+    let newNode = document.createElement("div");
     newNode.className = "tile";
     return newNode;
 }

@@ -11,7 +11,7 @@ function Wall(x, y) {
 
     /// Create the DOM Node
     this.node = GameActor();
-    var $node = $(this.node);
+    let $node = $(this.node);
     $node.attr("id", "wall")
         .css("left", (50 * x) + "px")
         .css("top", (50 * y) + "px")

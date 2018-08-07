@@ -8,7 +8,7 @@
 
 /////////////////////////// Grid ///////////////////////////
 
-var gridModel = {
+let gridModel = {
     gridLength : 1000,
     tileLength : 50,
     node : document.getElementById("grid"),
@@ -141,8 +141,8 @@ gridModel.resetActorsGrid = function() {
     /// time: O(N^2) : N = gridModel.tilesPerSide
     /// effects: modifies gridModel.actorsGrid
 
-    for (var y = 0; y < gridModel.tilesPerSide; ++y) {
-        for (var x = 0; x < gridModel.tilesPerSide; ++x) {
+    for (let y = 0; y < gridModel.tilesPerSide; ++y) {
+        for (let x = 0; x < gridModel.tilesPerSide; ++x) {
             gridModel.removeActor(x, y);
         }
     }
@@ -160,9 +160,10 @@ gridModel.readMazeLayout = function(layout) {
     /// effects: modifies gridModel.actorsGrid
 
     gridModel.resetActorsGrid();
-    for (var y = 0; y < layout.length; ++y) {
-        for (var x = 0; x < layout.length; ++x) {
+    for (let y = 0; y < layout.length; ++y) {
+        for (let x = 0; x < layout.length; ++x) {
             gridModel.addActor(layout[y][x], x, y);
+
             if (gridModel.getActor(x, y) == 'P') {
                 $(playerModel.node).appendTo("#grid");
                 playerModel.setPosition(x, y);
@@ -171,6 +172,7 @@ gridModel.readMazeLayout = function(layout) {
             } else if (gridModel.getActor(x, y) == 'M') {
                 alert("Minotaur has not been implemented yet.");
             }
+
         }
     }
 }
