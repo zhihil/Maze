@@ -43,7 +43,12 @@ playerModel.isValidMove = function(targetX, targetY) {
     /// Determines if the target position (targetX, targetY) is a valid
     ///   place to go to, based on the player's current position.
     /// isValidMove : int int -> bool
-    /// requires: maxX >= targetX >= 0, maxY >= targetY >= 0
+    /// requires: gridModel.tilesPerSide > targetX, targetY >= 0
+
+    if ((0 > targetX) || (targetX >= gridModel.tilesPerSide))
+        throw Error("playerModel.isValidMove() received targetX out-of-range");
+    if ((0 > targetY) || (targetY >= gridModel.tilesPerSide))
+        throw Error("playerModel.isValidMove() received targetY out-of-range");
 
     if (gridModel.isOccupied(targetX, targetY)) return false;
 
@@ -63,6 +68,13 @@ playerModel.isValidMove = function(targetX, targetY) {
 /// These animations are played by using SetInterval()
 
 playerModel.playerMove = function(targetX, targetY, direcX, direcY) {
+    /// Animates the player's movement from their starting tile to a
+    ///   selected tile (targetX, targetY), assuming the vector of 
+    ///   their movement is (direcX, direcY)
+    /// playerMove: int int int int -> void
+    /// requires: 0 <= targetX, targetY < gridModel.tilesPerSide
+    ///           -1 <= direcX, direcY <= 1
+    ///           One of direcX, direcY is non-zero, one is zero.
 
     this.moving = true;
 

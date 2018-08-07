@@ -26,5 +26,3 @@ function Wall(x, y, src) {
     /// Assign a reference to the gridModel
     gridModel.addActor('W', x, y);
 }
-
-var wall1 = Wall(1, 0, "");
