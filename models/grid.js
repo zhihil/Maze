@@ -81,7 +81,7 @@ gridModel.isValidTileCode = function(code) {
     ///     - 'W' - Wall
     ///     - 'T' - Treasure (Fleece)
 
-    return code === 'N' || code === 'P' || code === 'M' || code === 'W';
+    return code === 'N' || code === 'P' || code === 'M' || code === 'W' || code === 'T';
 }
 
 gridModel.removeActor = function(coordX, coordY) {
