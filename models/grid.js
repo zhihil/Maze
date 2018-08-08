@@ -79,6 +79,7 @@ gridModel.isValidTileCode = function(code) {
     ///     - 'P' - Player
     ///     - 'M' - Monster or Minotaur
     ///     - 'W' - Wall
+    ///     - 'T' - Treasure (Fleece)
 
     return code === 'N' || code === 'P' || code === 'M' || code === 'W';
 }

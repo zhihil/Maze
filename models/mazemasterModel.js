@@ -13,5 +13,17 @@ let mazemasterModel = {
     playerTiles: 0,
     monsterTiles: 0,
     wallTiles: 0,
-    paintbrushTile: 'N',
+    paintbrushTile: 'N'
 };
+
+mazemasterModel.changePaintbrush = function(newTile) {
+    /// Sets the value of mazemasterModel.paintbrushTile
+    /// changePaintbrush: tileCode -> void
+    /// time: O(1)
+    /// effects: modifies mazemasterModel.paintbrushTile.
+
+    if (!gridModel.isValidTileCode(newTile))
+        throw new TypeError("mazemasterModel.changePaintbrush was not given a valid tileCode.");
+
+    this.paintbrushTile = newTile;
+}
