@@ -2,7 +2,7 @@
 ///
 /// player.js
 ///
-/// Provides a model for the player tile.
+/// Manages the data and logic of a Player tile.
 ///
 //////////////////////////////////////////////////////////////////////
 

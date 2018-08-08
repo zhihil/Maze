@@ -30,8 +30,6 @@ for (let i = 0; i < gridModel.tilesPerSide; ++i)
     }
 }
 
-////////////////////// Support Functions//////////////////////
-
 gridModel.getCoordinates = function(posX, posY){
     /// Given the absolute position (posX, posY) in pixels, calculate the
     ///   the coordinates of the position relative to #grid's origin (top-left corner)
