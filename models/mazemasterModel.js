@@ -10,7 +10,7 @@
 //////////////////////// MazeMaster Model ////////////////////////
 
 let mazemasterModel = {
-    paintbrushTile: 'N',
+    paintbrushTile: 'W',
     palette: {}
 };
 
@@ -51,7 +51,7 @@ mazemasterModel.palette['P'] = function(coordX, coordY) {
     /// anon: int int -> void
     /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
 
-    if (mazemasterModel.playerTiles == 0)
+    if (mazemasterModel.tileCount['P'] === 0 && mazemasterModel.canvas[coordY][coordX] === null)
     {
         gridModel.addActor('P', coordX, coordY);
         $(playerModel.node).css("left", (50 * coordX) + "px")
@@ -80,9 +80,12 @@ mazemasterModel.palette['W'] = function(coordX, coordY) {
 }
 
 mazemasterModel.palette['N'] = function(coordX, coordY) {
-    if (mazemasterModel.canvas[y][x] !== null)
+    if (mazemasterModel.canvas[coordY][coordX] !== null)
     {
         $(mazemasterModel.canvas[coordY][coordX]).remove();
+        mazemasterModel.tileCount[gridModel.getActor(coordX, coordY)] -= 1;
+        mazemasterModel.canvas[coordY][coordX] = null;
+        gridModel.removeActor(coordX, coordY);
     }
 }
 
