@@ -19,7 +19,7 @@ let mazemasterModel = {
 
 mazemasterModel.palette['P'] = function(coordX, coordY) {
     /// Adds a Player to gridModel.actorsGrid and attaches its DOM Node
-    ///   to grid. Assumes that playerModel.node == Player() already exists.
+    ///     to grid. Assumes that playerModel.node == Player() already exists.
     /// anon: int int -> void
     /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
 
@@ -32,6 +32,18 @@ mazemasterModel.palette['P'] = function(coordX, coordY) {
                            .appendTo("#grid");
         ++mazemasterModel.playerTiles;
     }
+}
+
+mazemasterModel.palette['W'] = function(coordX, coordY) {
+    /// Adds a Wall to gridModel.actorsGrid and attaches its DOM Node
+    ///     to grid. Assumes that playerModel.node == Player() already
+    ///     exists.
+    /// anon : int int -> void
+    /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+
+    gridModel.addActor('W', coordX, coordY);
+    Wall(coordX, coordY);
+    ++mazemasterModel.wallTiles;
 }
 
 mazemasterModel.changePaintbrush = function(newTile) {
