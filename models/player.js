@@ -2,7 +2,7 @@
 ///
 /// player.js
 ///
-/// Provides a model for the player tile.
+/// Manages the data and logic of a Player tile.
 ///
 //////////////////////////////////////////////////////////////////////
 
@@ -12,7 +12,7 @@ function Player()
 {
     /// Constructor for a DOM Node representing the player.
     
-    var $player = $(GameActor());
+    let $player = $(GameActor());
     $player.attr("id", "player")
         .css("top", "0px")
         .css("left", "0px")
@@ -24,7 +24,7 @@ function Player()
 
 //////////////////////// Player Model ////////////////////////
 
-var playerModel = {
+let playerModel = {
     name: "Theseus",
     node: Player(),
     moving: false,
@@ -37,6 +37,16 @@ playerModel.getPosition = function() {
 
     const rect = this.node.getBoundingClientRect();
     return gridModel.getCoordinates(rect.left, rect.top);
+}
+
+playerModel.setPosition = function(coordX, coordY) {
+    /// Sets the player's graphical position to the place corresponding
+    ///   with the given (coordX, coordY).
+    /// setPosition : int int -> void
+    let offsetRect = gridModel.node.getBoundingClientRect();
+    playerModel.node.style.left = 50 * coordX + "px";
+    playerModel.node.style.top  = 50 * coordY + "px";
+
 }
 
 playerModel.isValidMove = function(targetX, targetY) {
@@ -93,14 +103,20 @@ playerModel.playerMove = function(targetX, targetY, direcX, direcY) {
         const playerRect = playerModel.node.getBoundingClientRect();
         if (Math.abs(playerRect.left - targetLeft) >= epsilon)
         {
+            /// Player must be moving horizontally. 
+
             playerModel.node.style.left = parseFloat(playerModel.node.style.left) + (movespeed * direcX) + "px";
         }
         else if (Math.abs(playerRect.top - targetTop) >= epsilon)
         {
+            /// Player must be moving vertically.
+
             playerModel.node.style.top = parseFloat(playerModel.node.style.top) + (movespeed * direcY) + "px";
         }
         else 
         {
+            /// Player is at the target position, so we complete the animation.
+
             /// Make sure the player is in the proper position on the screen.
             playerModel.node.style.left = targetLeft;
             playerModel.node.style.top  = targetTop;

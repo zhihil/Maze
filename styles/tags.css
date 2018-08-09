@@ -12,13 +12,34 @@ h1 {
     text-align: center;
 }
 
+button {
+    margin: 20px;
+    padding: 8px;
+
+    text-align: center;
+    font-size: 24px;
+
+    color: whitesmoke;
+    background-color: #111b1d;
+
+    border: none;
+
+    display: inline-block;
+}
+
 .screenshot {
     margin: auto;
     width: 1000px;
     text-align: center;
 }
 
+.centered {
+    margin: auto;
+    text-align: center
+}
+
 #text {
     width: 400px;
     margin: auto;
 }
+
