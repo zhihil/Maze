@@ -15,15 +15,11 @@ h1 {
 button {
     margin: 20px;
     padding: 8px;
-
     text-align: center;
     font-size: 24px;
-
     color: whitesmoke;
     background-color: #111b1d;
-
     border: none;
-
     display: inline-block;
 }
 
