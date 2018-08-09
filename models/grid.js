@@ -145,9 +145,9 @@ gridModel.resetActorsGrid = function() {
             gridModel.removeActor(x, y);
         }
     }
-    $("#player").detach();
-    $("#wall").detach();
-    $("#minotaur").detach();
+    $("#player").remove();
+    $("#wall").remove();
+    $("#minotaur").remove();
 }
 
 gridModel.readMazeLayout = function(layout) {
