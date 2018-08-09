@@ -1,5 +1,10 @@
 # Maze
 
+==================== How to Play ====================
+
+- Open main.html to play the game.
+- Open mazemaster.html to make your own maps.
+
 ==================== Chrome : List of Known Bugs ====================
 - <audio> tag in main.html does not play.
 
