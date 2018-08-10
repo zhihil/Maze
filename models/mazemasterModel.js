@@ -74,6 +74,7 @@ mazemasterModel.palette['W'] = function(coordX, coordY) {
     {
         gridModel.addActor('W', coordX, coordY);
         let newWall = new Wall(coordX, coordY);
+        gridModel.addNode(newWall.node, coordX, coordY);
         mazemasterModel.canvas[coordY][coordX] = newWall.node;
         mazemasterModel.tileCount[mazemasterModel.paintbrushTile] += 1;
     }

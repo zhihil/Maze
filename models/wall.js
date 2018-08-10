@@ -14,7 +14,4 @@ function Wall(x, y) {
     let $node = $(this.node);
     $node.attr("id", "wall")
         .css("z-index", "10")
-
-    /// Assign a reference to the gridModel
-    gridModel.addActor('W', x, y);
 }
