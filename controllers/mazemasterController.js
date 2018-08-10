@@ -31,3 +31,7 @@ $("#fleeceButton").on("click", function() {
 $("#eraseButton").on("click", function() {
     mazemasterModel.changePaintbrush('N');
 })
+
+$("#saveButton").on("click", function() {
+    localStorage["mazeSavedCustomMap"] = JSON.stringify(gridModel.actorsGrid);
+})
