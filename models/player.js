@@ -122,6 +122,7 @@ playerModel.playerMove = function(targetX, targetY, direcX, direcY) {
             const newPos = playerModel.getPosition();
             gridModel.addActor('P', newPos.x, newPos.y);
 
+            /// Make sure the player's DOM Node reference in gridModel.canvas is correct.
             gridModel.removeNodeReference(playerPos.x, playerPos.y);
             gridModel.addNodeReference(playerModel.node, newPos.x, newPos.y);
 
