@@ -145,6 +145,26 @@ gridModel.isOccupied = function(x, y) {
     return gridModel.actorsGrid[y][x] != 'N';
 }
 
+gridModel.removeNodeReference = function(coordX, coordY) {
+    /// Sets the node reference of canvas at (coordX, coordY) to null.
+    /// removeNodeReference: int int -> void
+    /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+    /// time: O(1)
+    /// effects: modifies gridModel.canvas
+    this.canvas[coordY][coordX] = null;
+}
+
+gridModel.addNodeReference = function(newNode, coordX, coordY) {
+    /// Adds a new node reference for canvas at (coordX, coordY).
+    /// addNodeReference: DOMNode int int ->void
+    /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+    ///           newNode != null, undefined 
+    /// time: O(1)
+    /// effects: modifies gridModel.canvas
+
+    this.canvas[coordY][coordX] = newNode;
+}
+
 gridModel.detachNode = function(coordX, coordY) {
     /// Removes the DOM Node at (coordX, coordY) from the DOM Node.
     /// detachNode: int int -> void
@@ -157,7 +177,7 @@ gridModel.detachNode = function(coordX, coordY) {
     {
         $(this.canvas[coordY][coordX]).remove();
     }
-    this.canvas[coordY][coordX] = null;
+    this.removeNodeReference(coordX, coordY);
 }
 
 gridModel.addNode = function(newNode, coordX, coordY) {
@@ -169,7 +189,7 @@ gridModel.addNode = function(newNode, coordX, coordY) {
     /// effects: modifies gridModel.canvas
     ///          modifies main.html.
 
-    this.canvas[coordY][coordX] = newNode;
+    this.addNodeReference(newNode, coordX, coordY);
     $(newNode).css("top", 50 * coordY + "px")
               .css("left", 50 * coordX + "px")
               .appendTo("#grid");

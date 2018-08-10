@@ -122,6 +122,9 @@ playerModel.playerMove = function(targetX, targetY, direcX, direcY) {
             const newPos = playerModel.getPosition();
             gridModel.addActor('P', newPos.x, newPos.y);
 
+            gridModel.removeNodeReference(playerPos.x, playerPos.y);
+            gridModel.addNodeReference(playerModel.node, newPos.x, newPos.y);
+
             /// Set relevant logic variables.
             playerModel.moving = false;
             window.clearInterval(playerModel.anim);
