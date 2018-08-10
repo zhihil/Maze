@@ -35,3 +35,7 @@ $("#eraseButton").on("click", function() {
 $("#saveButton").on("click", function() {
     localStorage["mazeSavedCustomMap"] = JSON.stringify(gridModel.actorsGrid);
 })
+
+$("#loadButton").on("click", function() {
+    gridModel.readMazeLayout(JSON.parse(localStorage["mazeSavedCustomMap"]));
+})

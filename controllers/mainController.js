@@ -18,3 +18,7 @@ $("#grid").on("click", function(event) {
         playerModel.playerMove(target.x, target.y, diff[0], diff[1]);
     }
 })
+
+$("#loadButton").on("click", function() {
+    gridModel.readMazeLayout(JSON.parse(localStorage["mazeSavedCustomMap"]));
+})
