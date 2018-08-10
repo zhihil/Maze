@@ -30,6 +30,18 @@ for (let i = 0; i < gridModel.tilesPerSide; ++i)
     }
 }
 
+/// Generate a 2D array of references to DOM nodes, which will be used
+///     by the Erase paintbrush option to delete DOM nodes on the screen.
+gridModel.canvas = new Array(gridModel.tilesPerSide);
+for (let y = 0; y < gridModel.tilesPerSide; ++y)
+{
+    gridModel.canvas[y] = new Array(gridModel.tilesPerSide);
+    for (let x = 0; x < gridModel.tilesPerSide; ++x)
+    {
+        gridModel.canvas[y][x] = null;
+    }
+}
+
 gridModel.getCoordinates = function(posX, posY){
     /// Given the absolute position (posX, posY) in pixels, calculate the
     ///   the coordinates of the position relative to #grid's origin (top-left corner)
@@ -133,6 +145,36 @@ gridModel.isOccupied = function(x, y) {
     return gridModel.actorsGrid[y][x] != 'N';
 }
 
+gridModel.detachNode = function(coordX, coordY) {
+    /// Removes the DOM Node at (coordX, coordY) from the DOM Node.
+    /// detachNode: int int -> void
+    /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+    /// time: O(1)
+    /// effects: modifies gridModel.canvas
+    ///          modifies main.html.
+
+    if (gridModel.canvas[coordY][coordX] !== null)
+    {
+        $(this.canvas[coordY][coordX]).remove();
+    }
+    this.canvas[coordY][coordX] = null;
+}
+
+gridModel.addNode = function(newNode, coordX, coordY) {
+    /// Adds the given DOM Node to (coordX, coordY) of canvas..
+    /// detachNode: DOMNode int int -> void
+    /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+    ///           newNode != null, undefined
+    /// time: O(1)
+    /// effects: modifies gridModel.canvas
+    ///          modifies main.html.
+
+    this.canvas[coordY][coordX] = newNode;
+    $(newNode).css("top", 50 * coordY + "px")
+              .css("left", 50 * coordX + "px")
+              .appendTo("#grid");
+}
+
 gridModel.resetActorsGrid = function() {
     /// Sets all elements in actorsGrid to tileCode 'N' and removes
     ///   all game tiles from view.
@@ -142,12 +184,10 @@ gridModel.resetActorsGrid = function() {
 
     for (let y = 0; y < gridModel.tilesPerSide; ++y) {
         for (let x = 0; x < gridModel.tilesPerSide; ++x) {
-            gridModel.removeActor(x, y);
+            this.removeActor(x, y);
+            this.detachNode(x, y);
         }
     }
-    $("#player").remove();
-    $("#wall").remove();
-    $("#minotaur").remove();
 }
 
 gridModel.readMazeLayout = function(layout) {
@@ -164,14 +204,16 @@ gridModel.readMazeLayout = function(layout) {
             gridModel.addActor(layout[y][x], x, y);
 
             if (gridModel.getActor(x, y) == 'P') {
-                $(playerModel.node).appendTo("#grid");
-                playerModel.setPosition(x, y);
+                this.addNode(playerModel.node, x, y);
+
             } else if (gridModel.getActor(x, y) == 'W') {
-                Wall(x, y);
+                let wall = new Wall(x, y);
+                this.addNode(wall.node, x, y);
+
             } else if (gridModel.getActor(x, y) == 'M') {
                 alert("Minotaur has not been implemented yet.");
-            }
 
+            }
         }
     }
 }

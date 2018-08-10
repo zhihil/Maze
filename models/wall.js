@@ -13,14 +13,7 @@ function Wall(x, y) {
     this.node = GameActor();
     let $node = $(this.node);
     $node.attr("id", "wall")
-        .css("left", (50 * x) + "px")
-        .css("top", (50 * y) + "px")
         .css("z-index", "10")
-        .appendTo("#grid");
-    
-    /// Set the Wall's internal coordinates.
-    this.x = x;
-    this.y = y;
 
     /// Assign a reference to the gridModel
     gridModel.addActor('W', x, y);

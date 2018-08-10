@@ -14,11 +14,7 @@ function Player()
     
     let $player = $(GameActor());
     $player.attr("id", "player")
-        .css("top", "0px")
-        .css("left", "0px")
         .css("z-index", "10")
-        .appendTo("#grid");
-    gridModel.addActor('P', 0, 0);
     return $player[0];
 }
 
