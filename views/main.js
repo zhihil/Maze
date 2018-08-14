@@ -6,6 +6,10 @@
 ///
 //////////////////////////////////////////////////////////////////////
 
+/// Add the associated models.
+let gridModel = new GridModel();
+
+/// Create the checkboard pattern.
 makeCheckerBoard();
 
 /// The default map
