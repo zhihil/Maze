@@ -11,6 +11,7 @@
 
 $("#grid").on("click", function(event) {
     const target = gridModel.getCoordinates(event.clientX, event.clientY);
+    let playerModel = gridModel.player
     if (!playerModel.moving && playerModel.isValidMove(target.x, target.y))
     {
         const playerPos = playerModel.getPosition();

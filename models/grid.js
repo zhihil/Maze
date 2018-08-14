@@ -12,6 +12,7 @@ let gridModel = {
     gridLength : 1000,
     tileLength : 50,
     node : document.getElementById("grid"),
+    player : null,
 };
 gridModel.tilesPerSide = gridModel.gridLength / gridModel.tileLength;
 
@@ -204,6 +205,8 @@ gridModel.resetActorsGrid = function() {
 
     for (let y = 0; y < gridModel.tilesPerSide; ++y) {
         for (let x = 0; x < gridModel.tilesPerSide; ++x) {
+            if (gridModel.actorsGrid[y][x] == 'P') 
+                gridModel.player = null;
             this.removeActor(x, y);
             this.detachNode(x, y);
         }
@@ -224,6 +227,7 @@ gridModel.readMazeLayout = function(layout) {
             gridModel.addActor(layout[y][x], x, y);
 
             if (gridModel.getActor(x, y) == 'P') {
+                let playerModel = new PlayerModel("Theseus");
                 this.addNode(playerModel.node, x, y);
 
             } else if (gridModel.getActor(x, y) == 'W') {

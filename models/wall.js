@@ -6,12 +6,11 @@
 ///
 //////////////////////////////////////////////////////////////////////
 
-function Wall(x, y) {
-    /// Constructor for the a Wall game actor.
-
-    /// Create the DOM Node
-    this.node = GameActor();
-    let $node = $(this.node);
-    $node.attr("id", "wall")
-        .css("z-index", "10")
+class Wall extends GameActor {
+    constructor(name) {
+        super(name);
+        
+        $(this.node).attr("id", "wall")
+                    .css("z-index", "10");
+    }
 }
