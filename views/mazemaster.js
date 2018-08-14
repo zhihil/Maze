@@ -6,7 +6,11 @@
 ///
 //////////////////////////////////////////////////////////////////////
 
+/// Add the associated models.
+let mazemasterModel = new MazemasterModel();
+
+/// Create the checkboard pattern.
 makeCheckerBoard();
 
 /// Remove any existing tiles on the board.
-gridModel.resetActorsGrid();
+mazemasterModel.resetActorsGrid();

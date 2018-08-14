@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////
 
 $("#grid").on("click", function(event) {
-    let coord = gridModel.getCoordinates(event.clientX, event.clientY);
+    let coord = mazemasterModel.getCoordinates(event.clientX, event.clientY);
     mazemasterModel.paint(coord.x, coord.y);
 })
 
@@ -33,5 +33,5 @@ $("#eraseButton").on("click", function() {
 })
 
 $("#saveButton").on("click", function() {
-    localStorage["mazeSavedCustomMap"] = JSON.stringify(gridModel.actorsGrid);
+    localStorage["mazeSavedCustomMap"] = JSON.stringify(mazemasterModel.actorsGrid);
 })
