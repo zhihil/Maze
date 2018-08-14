@@ -227,8 +227,8 @@ gridModel.readMazeLayout = function(layout) {
             gridModel.addActor(layout[y][x], x, y);
 
             if (gridModel.getActor(x, y) == 'P') {
-                let playerModel = new PlayerModel("Theseus");
-                this.addNode(playerModel.node, x, y);
+                this.player = new PlayerModel("Theseus");
+                this.addNode(this.player.node, x, y);
 
             } else if (gridModel.getActor(x, y) == 'W') {
                 let wall = new Wall(x, y);

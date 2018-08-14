@@ -88,7 +88,7 @@ class GameActor {
                 this.node.style.top  = targetTop;
 
                 /// Make sure the player is in the proper position programmatically. 
-                gridModel.removeActor(playerPos.x, playerPos.y);
+                gridModel.removeActor(actorPos.x, actorPos.y);
                 const newPos = this.getPosition();
                 gridModel.addActor('P', newPos.x, newPos.y);
 
