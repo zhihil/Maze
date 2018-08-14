@@ -20,10 +20,10 @@ class GridModel {
         /// The actorsGrid is used to track what elements are on the grid. 
         /// The elements of actorsGrid are of type "tileCode"
 
-        /// List of possible values for "tileCodes" is found in gridModel.isValidTileCode()
+        /// List of possible values for "tileCodes" is found in this.isValidTileCode()
 
         this.actorsGrid = new Array(this.tilesPerSide);
-        for (let i = 0; i < gridModel.tilesPerSide; ++i)
+        for (let i = 0; i < this.tilesPerSide; ++i)
         {
             this.actorsGrid[i] = new Array(this.tilesPerSide);
             for (let j = 0; j < this.tilesPerSide; ++j)
@@ -70,21 +70,21 @@ class GridModel {
     addActor(tileCode, coordX, coordY) {
         /// Adds a newActor at (coordX, coordY), where (0, 0) is the top-left square on
         ///   the board and the positive axis go downward and rightward.
-        /// addActor: tileCode (gridModel.isValidTileCode) int int -> void
+        /// addActor: tileCode (this.isValidTileCode) int int -> void
         /// requires: 0 <= coordX, coordY < maxNumTiles
         
-        if (!gridModel.isValidTileCode(tileCode))
+        if (!this.isValidTileCode(tileCode))
             throw Error("removeActor() was given an invalid tileCode");
         if (0 > coordX)
             throw Error("removeActor() was given a negative x-coordinate");
-        if (coordX >= gridModel.tilesPerSide)
+        if (coordX >= this.tilesPerSide)
             throw Error("removeActor() was given an out-of-range x-coordinate");
         if (0 > coordY)
             throw Error("removeActor() was given a negative y-coordinate");
-        if (coordY >= gridModel.tilesPerSide)
+        if (coordY >= this.tilesPerSide)
             throw Error("removeActor() was given an out-of-range y-coordinate");
 
-        gridModel.actorsGrid[coordY][coordX] = tileCode;
+            this.actorsGrid[coordY][coordX] = tileCode;
     }
     
     isValidTileCode(code) {
@@ -138,12 +138,12 @@ class GridModel {
     isOccupied(coordX, coordY) {
     /// Determines if the chosen tile (coordX, coordY) on the grid is occupied or not.
     /// isOccupied: int int -> bool
-    /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+    /// requires: 0 <= coordX, coordY < this.tilesPerSide
 
         if (0 > coordX || coordX >= this.tilesPerSide)
-            throw Error("isOccupied() received x out-of-range.");
+            throw Error("this.isOccupied() received x out-of-range.");
         if (0 > coordY || coordY >= this.tilesPerSide)
-            throw Error("gridModel.isOccupied() received y out-of-range.");
+            throw Error("this.isOccupied() received y out-of-range.");
 
         return this.actorsGrid[coordY][coordX] != 'N';
     }
@@ -151,19 +151,19 @@ class GridModel {
     removeNodeReference(coordX, coordY) {
         /// Sets the node reference of canvas at (coordX, coordY) to null.
         /// removeNodeReference: int int -> void
-        /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+        /// requires: 0 <= coordX, coordY < this.tilesPerSide
         /// time: O(1)
-        /// effects: modifies gridModel.canvas
+        /// effects: modifies this.canvas
         this.canvas[coordY][coordX] = null;
     }
 
     addNodeReference(newNode, coordX, coordY) {
         /// Adds a new node reference for canvas at (coordX, coordY).
         /// addNodeReference: DOMNode int int ->void
-        /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+        /// requires: 0 <= coordX, coordY < this.tilesPerSide
         ///           newNode != null, undefined 
         /// time: O(1)
-        /// effects: modifies gridModel.canvas
+        /// effects: modifies this.canvas
 
         this.canvas[coordY][coordX] = newNode;
     }
@@ -171,9 +171,9 @@ class GridModel {
     detachNode(coordX, coordY) {
         /// Removes the DOM Node at (coordX, coordY) from the DOM Node.
         /// detachNode: int int -> void
-        /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+        /// requires: 0 <= coordX, coordY < this.tilesPerSide
         /// time: O(1)
-        /// effects: modifies gridModel.canvas
+        /// effects: modifies this.canvas
         ///          modifies main.html.
 
         if (this.canvas[coordY][coordX] !== null)
@@ -186,10 +186,10 @@ class GridModel {
     addNode(newNode, coordX, coordY) {
         /// Adds the given DOM Node to (coordX, coordY) of canvas..
         /// detachNode: DOMNode int int -> void
-        /// requires: 0 <= coordX, coordY < gridModel.tilesPerSide
+        /// requires: 0 <= coordX, coordY < this.tilesPerSide
         ///           newNode != null, undefined
         /// time: O(1)
-        /// effects: modifies gridModel.canvas
+        /// effects: modifies this.canvas
         ///          modifies main.html.
 
         this.addNodeReference(newNode, coordX, coordY);
@@ -202,8 +202,8 @@ class GridModel {
         /// Sets all elements in actorsGrid to tileCode 'N' and removes
         ///   all game tiles from view.
         /// resetActorsGrid: void -> void
-        /// time: O(N^2) : N = gridModel.tilesPerSide
-        /// effects: modifies gridModel.actorsGrid
+        /// time: O(N^2) : N = this.tilesPerSide
+        /// effects: modifies this.actorsGrid
 
         for (let y = 0; y < this.tilesPerSide; ++y) {
             for (let x = 0; x < this.tilesPerSide; ++x) {
@@ -216,12 +216,12 @@ class GridModel {
     }
 
     readMazeLayout(layout) {
-        /// Fills the gridModel's actorsGrid with the elements specified in
+        /// Fills the this's actorsGrid with the elements specified in
         ///   layout.
         /// readMazeLayout: Arrayof(tileCode) -> void
-        /// requires: layout is a square grid with length gridModel.tilesPerSide
-        /// time: O(N^2) : N = gridModel.tilesPerSide
-        /// effects: modifies gridModel.actorsGrid
+        /// requires: layout is a square grid with length this.tilesPerSide
+        /// time: O(N^2) : N = this.tilesPerSide
+        /// effects: modifies this.actorsGrid
 
         this.resetActorsGrid();
         for (let y = 0; y < layout.length; ++y) {
