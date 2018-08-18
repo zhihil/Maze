@@ -240,6 +240,24 @@ function playerNearEnemy() {
 
 /// Contains functions used by the Minotaur to find a path to the player and follow it.
 
+/// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
+let monsterMovement = [];
+
+function addMovement(x, y) {
+    /// Adds a new direction object { dx : x , dy : y } to the beginning of monsterMovement.
+    /// addMovement: int int -> void
+    /// requires: -1 <= x, y <= 1
+    ///           one of x, y must be 0, one is not 0.
+    /// effects: modifies monsterMovement
+
+    if (x < -1 || x > 1) 
+        throw new Error("addMovement was given invalid x");
+    else if (y < -1 || y > 1)
+        throw new Error("addMovement was given invalid y");
+    else if (x != 0 && y != 0)
+        throw new Error("addMovement was given an invalid movement pair");
+    monsterMovement.unshift({ dx : x, dy : y});
+}
 
 
 //////////////////////////////////////////////////// EVENT LISTENERS ////////////////////////////////////////////////////
