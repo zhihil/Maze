@@ -6,22 +6,11 @@
 ///
 //////////////////////////////////////////////////////////////////////
 
-function Wall(x, y) {
-    /// Constructor for the a Wall game actor.
-
-    /// Create the DOM Node
-    this.node = GameActor();
-    let $node = $(this.node);
-    $node.attr("id", "wall")
-        .css("left", (50 * x) + "px")
-        .css("top", (50 * y) + "px")
-        .css("z-index", "10")
-        .appendTo("#grid");
-    
-    /// Set the Wall's internal coordinates.
-    this.x = x;
-    this.y = y;
-
-    /// Assign a reference to the gridModel
-    gridModel.addActor('W', x, y);
+class Wall extends GameActor {
+    constructor(name) {
+        super(name);
+        
+        $(this.node).attr("id", "wall")
+                    .css("z-index", "10");
+    }
 }
