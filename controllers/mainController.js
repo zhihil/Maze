@@ -268,7 +268,7 @@ $("#grid").on("click", function(event) {
     let minotaurStatus = evaluateMinotaurStatus();
 
     if (minotaurStatus.dead) {
-        let minotaurPos = gridModel.monster.getPosition();
+        let minotaurPos = gridModel.monster.getPosition(gridModel);
         $(gridModel.getNodeReference(minotaurPos.x, minotaurPos.y)).remove();
         gridModel.removeComplete(minotaurPos.x, minotaurPos.y);
     }
