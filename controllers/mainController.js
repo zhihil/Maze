@@ -10,12 +10,12 @@
 ///////////////// SETTING UP THE MODELS /////////////////
 
 let gridModel = new GridModel();
-gridModel.setGridNode("#grid");
+gridModel.node = $("#grid")[0]
 
 
 ///////////////// DISPLAYING ELEMENTS /////////////////
 
-function addNode(newNode, coordX, coordY) {
+function displayNode(newNode, coordX, coordY) {
     /// Adds the given DOM Node to (coordX, coordY) of canvas..
     /// detachNode: DOMNode int int -> void
     /// requires: 0 <= coordX, coordY < this.tilesPerSide
@@ -39,7 +39,7 @@ function displayGrid() {
         {
             if (gridModel.canvas[y][x] !== null)
             {
-                addNode(gridModel.canvas[y][x], x, y);
+                displayNode(gridModel.canvas[y][x], x, y);
             }
         }
     }
@@ -111,3 +111,4 @@ $("#loadButton").on("click", function() {
     gridModel.readMazeLayout(JSON.parse(localStorage["mazeSavedCustomMap"]));
     displayGrid();
 });
+

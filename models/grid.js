@@ -45,14 +45,6 @@ class GridModel {
         }
     }
 
-    setGridNode(id) {
-        /// Sets GridModel's node property to id.
-        /// setGridNode: string -> void
-        /// requires: id must include the # prefix
-
-        this.node = document.getElementById(id);
-    }
-
     getCoordinates(posX, posY) {
         /// Given the absolute position (posX, posY) in pixels, calculate the
         ///   the coordinates of the position relative to #grid's origin (top-left corner)
@@ -132,6 +124,15 @@ class GridModel {
             throw Error("getActor() was given an out-of-range y-coordinate");
 
         return this.actorsGrid[coordY][coordX];
+    }
+
+    isOccupied(coordX, coordY) {
+        /// Determines if the tile at (coordX, coordY) is occupied or not.
+        /// isOccupied: int int -> void
+        /// requires: 0 <= coordX, coordY < maxNumTiles
+
+        let tile = this.getActor(coordX, coordY);
+        return tile != 'N';
     }
 
     addNodeReference(newNode, coordX, coordY) {
