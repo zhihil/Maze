@@ -11,6 +11,7 @@
 
 /// Add the associated models.
 let mazemasterModel = new MazemasterModel();
+mazemasterModel.node = $("#grid")[0];
 
 mazemasterModel.palette['P'] = function(coordX, coordY) {
     /// Adds a Player to this.actorsGrid and attaches its DOM Node
@@ -26,8 +27,8 @@ mazemasterModel.palette['P'] = function(coordX, coordY) {
                            .css("top", (50 * coordY) + "px")
                            .css("z-index", 10)
                            .appendTo("#grid");
-                           this.canvas[coordY][coordX] = player.node;
-        this.tileCount[this.paintbrushTile] += 1;
+        this.canvas[coordY][coordX] = this.player.node;
+        this.incrementTile(this.paintbrushTile);
     }
 }.bind(mazemasterModel);
 
@@ -42,9 +43,11 @@ mazemasterModel.palette['W'] = function(coordX, coordY) {
     {
         this.addActor('W', coordX, coordY);
         let newWall = new Wall(coordX, coordY);
-        this.addNode(newWall.node, coordX, coordY);
+        $(newWall.node).css("left", (50 * coordX) + "px")
+                            .css("top", (50 * coordY) + "px")
+                            .appendTo("#grid");
         this.canvas[coordY][coordX] = newWall.node;
-        this.tileCount[this.paintbrushTile] += 1;
+        this.incrementTile(this.paintbrushTile);
     }
 }.bind(mazemasterModel);
 
@@ -52,7 +55,7 @@ mazemasterModel.palette['N'] = function(coordX, coordY) {
     if (this.canvas[coordY][coordX] !== null)
     {
         $(this.canvas[coordY][coordX]).remove();
-        this.tileCount[this.getActor(coordX, coordY)] -= 1;
+        this.decrementTile(this.getActor(coordX, coordY));
         this.canvas[coordY][coordX] = null;
         this.removeActor(coordX, coordY);
     }
@@ -72,7 +75,7 @@ mazemasterModel.resetActorsGrid();
 
 $("#grid").on("click", function(event) {
     let coord = mazemasterModel.getCoordinates(event.clientX, event.clientY);
-    mazemasterModel.paint(mazemasterModel, coord.x, coord.y);
+    mazemasterModel.paint(coord.x, coord.y);
 })
 
 $("#playerButton").on("click", function() {

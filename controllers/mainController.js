@@ -26,8 +26,12 @@ function readMazeLayout(layout) {
     for (let y = 0; y < layout.length; ++y) {
         for (let x = 0; x < layout.length; ++x) {
             gridModel.addActor(layout[y][x], x, y);
-
-            if (gridModel.getActor(x, y) == 'P') {
+            
+            if (gridModel.getActor(x, y) == 'N') {
+                gridModel.removeNodeReference(x, y);
+                
+            }
+            else if (gridModel.getActor(x, y) == 'P') {
                 gridModel.player = new PlayerModel("Theseus");
                 gridModel.addNodeReference(gridModel.player.node, x, y);
 
@@ -229,7 +233,7 @@ $("#grid").on("click", function(event) {
 
 $("#loadButton").on("click", function() {
     clearGrid();
-    gridModel.readMazeLayout(JSON.parse(localStorage["mazeSavedCustomMap"]));
+    readMazeLayout(JSON.parse(localStorage["mazeSavedCustomMap"]));
     displayGrid();
 });
 

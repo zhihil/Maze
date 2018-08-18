@@ -47,12 +47,15 @@ class MazemasterModel extends GridModel {
             }
         }
 
+        /// This is intended to be a dictionary of functions, where the key is some
+        ///     tilecode and the function contains logic to display the tile onto the screen.
+        /// see also this.paint() and this.changePaintbrush().
         this.palette = {};
     }
 
     changePaintbrush(newTile) {
         /// Sets the value of this.paintbrushTile
-        /// changePaintbrush: tileCode -> void
+        /// changePaintbrush: tileCode (see this.isValidTileCode) -> void
         /// time: O(1)
         /// effects: modifies this.paintbrushTile.
     
@@ -69,6 +72,30 @@ class MazemasterModel extends GridModel {
         /// requires: 0 <= coordX, coordY < this.tilesPerSide
 
         this.palette[this.paintbrushTile](coordX, coordY);
+    }
+
+    incrementTile(tileCode) {
+        /// Increases the count of the specified tileCode by 1.
+        /// incrementTile : tileCode (see this.isValidTileCode) -> void
+        /// time: O(1)
+        /// effects: modifies this.tileCount[tileCode]
+
+        if (!this.isValidTileCode(tileCode))
+            throw new TypeError("this.changePaintbrush was not given a valid tileCode.");
+
+        this.tileCount[tileCode] += 1;
+    }
+
+    decrementTile(tileCode) {
+        /// Decreases the count of the specified tileCode by 1.
+        /// decrementTile : tileCode (see this.isValidTileCode) -> void
+        /// time: O(1)
+        /// effects: modifies this.tileCount[tileCode]
+
+        if (!this.isValidTileCode(tileCode))
+            throw new TypeError("this.changePaintbrush was not given a valid tileCode.");
+
+        this.tileCount[tileCode] -= 1;
     }
 }
 
