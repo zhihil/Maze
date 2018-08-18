@@ -10,10 +10,11 @@
 
 class GridModel {
     constructor() {
-        this.gridLength = 1000;
-        this.tileLength = 50;
-        this.node = null;
-        this.player = null;
+        this.gridLength   = 1000;
+        this.tileLength   = 50;
+        this.node         = null;
+        this.player       = null;
+        this.monster      = null;
         this.tilesPerSide = this.gridLength / this.tileLength;
 
 
@@ -170,5 +171,17 @@ class GridModel {
                 this.removeNodeReference(x, y);
             }
         }
+    }
+
+    isOccupiedBy(tilecode, coordX, coordY) {
+        /// Determines if the position (coordX, coordY) is occupied by
+        ///     the specified tilecode.
+        /// isOccupiedBy: tilecode (see this.isValidTileCode) int int -> bool
+        /// requires: 0 <= coordX, coordY < this.tilesPerSide
+        
+        if (!this.isValidTileCode(tilecode))
+            throw Error("removeActor() was given an invalid tileCode");
+
+        return this.getActor(coordX, coordY) == tilecode;
     }
 }

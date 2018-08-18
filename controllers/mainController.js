@@ -10,10 +10,7 @@
 ///////////////// SETTING UP THE MODELS /////////////////
 
 let gridModel = new GridModel();
-gridModel.node = $("#grid")[0]
-
-/// List of GameActors that act when the Player's turn is over.
-let enemyActors = [];
+gridModel.node = $("#grid")[0];
 
 
 ///////////////// DISPLAYING ELEMENTS /////////////////
@@ -43,9 +40,8 @@ function readMazeLayout(layout) {
                 gridModel.addNodeReference(wall.node, x, y);
 
             } else if (gridModel.getActor(x, y) == 'M') {
-                let minotaur = new MinotaurModel("Moo-moo");
-                enemyActors.push(minotaur);
-                gridModel.addNodeReference(minotaur.node, x, y);
+                gridModel.monster = new MinotaurModel("Moo-moo");
+                gridModel.addNodeReference(gridModel.monster.node, x, y);
 
             }
         }
@@ -156,7 +152,6 @@ function isValidMove(targetX, targetY) {
     return false;
 }
 
-
 function actorMove(targetX, targetY, direcX, direcY) {
     /// Animates the GameActor's movement from their starting tile to a
     ///   selected tile (targetX, targetY), assuming the vector of 
@@ -223,17 +218,46 @@ function actorMove(targetX, targetY, direcX, direcY) {
 }
 
 
+///////////////// GAME LOGIC /////////////////
+
+function EvaluateEnemyStatus() {
+
+}
+
+function EvalutePlayerStatus() {
+
+}
+
+
 ///////////////// EVENT LISTENERS /////////////////
 
 $("#grid").on("click", function(event) {
-    const target = gridModel.getCoordinates(event.clientX, event.clientY);
+
+    /// Player's turn
+    const target    = gridModel.getCoordinates(event.clientX, event.clientY);
     let playerModel = gridModel.player;
-    if (!playerModel.moving && isValidMove.call(playerModel, target.x, target.y))
+
+    if (gridModel.isOccupiedBy('M', target.x, target.y))
     {
+        /// Attack the monster.
+
+        gridModel.monster.takeDamage(gridModel.player.attack);
+    }
+    else if (!playerModel.moving && isValidMove.call(playerModel, target.x, target.y))
+    {
+        /// Move the player.
+
         const playerPos = playerModel.getPosition(gridModel);
-        const diff = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
+        const diff      = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
+
         actorMove.call(playerModel, target.x, target.y, diff[0], diff[1]);
     }
+
+    /// Enemy Turns
+
+    EvaluateEnemyStatus();
+
+    EvalutePlayerStatus();
 });
 
 $("#loadButton").on("click", function() {
