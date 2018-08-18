@@ -47,4 +47,18 @@ class GameActor {
         
         return this.health > 0;
     }
+
+    takeDamage(damage) {
+        /// Reduces the GameActor's healtb by the specified damage.
+        /// takeDamage : int -> void
+
+        this.health -= damage;
+    }
+
+    takeHealing(amount) {
+        /// Increases the GameActor's health by the specified amount
+        /// takeHealing : int -> void
+
+        this.health += amount;
+    }
 }
