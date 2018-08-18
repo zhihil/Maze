@@ -72,7 +72,7 @@ function displayGrid() {
         {
             if (gridModel.getNodeReference(x, y) !== null)
             {
-                displayNode(gridModel.getNodeReference(x, y));
+                displayNode(gridModel.getNodeReference(x, y), x, y);
             }
         }
     }
