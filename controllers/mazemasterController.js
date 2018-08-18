@@ -7,9 +7,72 @@
 ///
 //////////////////////////////////////////////////////////////////////
 
+////////////////////// SETTING UP MODELS //////////////////////
+
+/// Add the associated models.
+let mazemasterModel = new MazemasterModel();
+
+mazemasterModel.palette['P'] = function(coordX, coordY) {
+    /// Adds a Player to this.actorsGrid and attaches its DOM Node
+    ///     to grid. Assumes that player.node == Player() already exists.
+    /// anon: int int -> void
+    /// requires: 0 <= coordX, coordY < this.tilesPerSide
+
+    if (this.tileCount['P'] === 0 && this.canvas[coordY][coordX] === null)
+    {
+        this.addActor('P', coordX, coordY);
+        this.player = new PlayerModel("Theseus");
+        $(this.player.node).css("left", (50 * coordX) + "px")
+                           .css("top", (50 * coordY) + "px")
+                           .css("z-index", 10)
+                           .appendTo("#grid");
+                           this.canvas[coordY][coordX] = player.node;
+        this.tileCount[this.paintbrushTile] += 1;
+    }
+}.bind(mazemasterModel);
+
+mazemasterModel.palette['W'] = function(coordX, coordY) {
+    /// Adds a Wall to this.actorsGrid and attaches its DOM Node
+    ///     to grid. Assumes that player.node == Player() already
+    ///     exists.
+    /// anon : int int -> void
+    /// requires: 0 <= coordX, coordY < this.tilesPerSide
+
+    if (this.canvas[coordY][coordX] === null)
+    {
+        this.addActor('W', coordX, coordY);
+        let newWall = new Wall(coordX, coordY);
+        this.addNode(newWall.node, coordX, coordY);
+        this.canvas[coordY][coordX] = newWall.node;
+        this.tileCount[this.paintbrushTile] += 1;
+    }
+}.bind(mazemasterModel);
+
+mazemasterModel.palette['N'] = function(coordX, coordY) {
+    if (this.canvas[coordY][coordX] !== null)
+    {
+        $(this.canvas[coordY][coordX]).remove();
+        this.tileCount[this.getActor(coordX, coordY)] -= 1;
+        this.canvas[coordY][coordX] = null;
+        this.removeActor(coordX, coordY);
+    }
+}.bind(mazemasterModel);
+
+
+////////////////////// DISPLAYING ELEMENTS //////////////////////
+
+/// Create the checkboard pattern.
+makeCheckerBoard();
+
+/// Remove any existing tiles on the board.
+mazemasterModel.resetActorsGrid();
+
+
+////////////////////// EVENT LISTENERS //////////////////////
+
 $("#grid").on("click", function(event) {
     let coord = mazemasterModel.getCoordinates(event.clientX, event.clientY);
-    mazemasterModel.paint(coord.x, coord.y);
+    mazemasterModel.paint(mazemasterModel, coord.x, coord.y);
 })
 
 $("#playerButton").on("click", function() {

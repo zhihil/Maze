@@ -48,52 +48,6 @@ class MazemasterModel extends GridModel {
         }
 
         this.palette = {};
-
-        this.palette['P'] = function(coordX, coordY) {
-            /// Adds a Player to this.actorsGrid and attaches its DOM Node
-            ///     to grid. Assumes that player.node == Player() already exists.
-            /// anon: int int -> void
-            /// requires: 0 <= coordX, coordY < this.tilesPerSide
-        
-            if (this.tileCount['P'] === 0 && this.canvas[coordY][coordX] === null)
-            {
-                this.addActor('P', coordX, coordY);
-                this.player = new PlayerModel("Theseus");
-                $(this.player.node).css("left", (50 * coordX) + "px")
-                                   .css("top", (50 * coordY) + "px")
-                                   .css("z-index", 10)
-                                   .appendTo("#grid");
-                                   this.canvas[coordY][coordX] = player.node;
-                this.tileCount[this.paintbrushTile] += 1;
-            }
-        }.bind(this);
-
-        this.palette['W'] = function(coordX, coordY) {
-            /// Adds a Wall to this.actorsGrid and attaches its DOM Node
-            ///     to grid. Assumes that player.node == Player() already
-            ///     exists.
-            /// anon : int int -> void
-            /// requires: 0 <= coordX, coordY < this.tilesPerSide
-        
-            if (this.canvas[coordY][coordX] === null)
-            {
-                this.addActor('W', coordX, coordY);
-                let newWall = new Wall(coordX, coordY);
-                this.addNode(newWall.node, coordX, coordY);
-                this.canvas[coordY][coordX] = newWall.node;
-                this.tileCount[this.paintbrushTile] += 1;
-            }
-        }.bind(this);
-
-        this.palette['N'] = function(coordX, coordY) {
-            if (this.canvas[coordY][coordX] !== null)
-            {
-                $(this.canvas[coordY][coordX]).remove();
-                this.tileCount[this.getActor(coordX, coordY)] -= 1;
-                this.canvas[coordY][coordX] = null;
-                this.removeActor(coordX, coordY);
-            }
-        }.bind(this);
     }
 
     changePaintbrush(newTile) {

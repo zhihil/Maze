@@ -171,32 +171,4 @@ class GridModel {
             }
         }
     }
-    
-    readMazeLayout(layout) {
-        /// Fills the this's actorsGrid with the elements specified in
-        ///   layout.
-        /// readMazeLayout: Arrayof(tileCode) -> void
-        /// requires: layout is a square grid with length this.tilesPerSide
-        /// time: O(N^2) : N = this.tilesPerSide
-        /// effects: modifies this.actorsGrid
-    
-        for (let y = 0; y < layout.length; ++y) {
-            for (let x = 0; x < layout.length; ++x) {
-                this.addActor(layout[y][x], x, y);
-    
-                if (this.getActor(x, y) == 'P') {
-                    this.player = new PlayerModel("Theseus");
-                    this.addNodeReference(this.player.node, x, y);
-    
-                } else if (this.getActor(x, y) == 'W') {
-                    let wall = new Wall(x, y);
-                    this.addNodeReference(wall.node, x, y);
-    
-                } else if (this.getActor(x, y) == 'M') {
-                    alert("Minotaur has not been implemented yet.");
-    
-                }
-            }
-        }
-    }
 }
