@@ -6,3 +6,12 @@
 ///   player tracking, health, attack, and respawn.
 ///
 //////////////////////////////////////////////////////////////////////
+
+class MonsterModel extends GameActor {
+    constructor(name) {
+        super(name, 2);
+
+        $(this.node).attr("id", "monster")
+                    .attr("z-index", "10");
+    }
+}

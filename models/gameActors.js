@@ -10,11 +10,12 @@
 class GameActor {
     ////////////////////////// Constructor //////////////////////////
     
-    constructor(name) {
+    constructor(name, health) {
         this.name   = name;
         this.node   = document.createElement("div");
         this.moving = false;
         this.anim   = null;
+        this.health = health;
 
         $(this.node).attr("class", "tile");
     }

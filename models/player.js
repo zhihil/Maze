@@ -8,7 +8,7 @@
 
 class PlayerModel extends GameActor {
     constructor(name) {
-        super(name);
+        super(name, 3);
 
         $(this.node).attr("id", "player")
                     .css("z-index", "10");

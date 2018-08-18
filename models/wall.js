@@ -8,7 +8,7 @@
 
 class Wall extends GameActor {
     constructor(name) {
-        super(name);
+        super(name, 100);
         
         $(this.node).attr("id", "wall")
                     .css("z-index", "10");
