@@ -134,9 +134,9 @@ function isValidMove(targetX, targetY) {
     /// requires: gridModel.tilesPerSide > targetX, targetY >= 0
 
     if ((0 > targetX) || (targetX >= gridModel.tilesPerSide))
-        throw Error("isValidMove() received targetX out-of-range");
+        throw new Error("isValidMove() received targetX out-of-range");
     if ((0 > targetY) || (targetY >= gridModel.tilesPerSide))
-        throw Error("isValidMove() received targetY out-of-range");
+        throw new Error("isValidMove() received targetY out-of-range");
 
     if (gridModel.isOccupied(targetX, targetY)) return false;
 

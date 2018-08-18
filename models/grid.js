@@ -51,13 +51,13 @@ class GridModel {
         /// validateCoordinates: int int-> void
 
         if (0 > coordX)
-            throw Error("validateCoordinates() was given a negative x-coordinate");
+            throw new Error("validateCoordinates() was given a negative x-coordinate");
         if (coordX >= this.tilesPerSide)
-            throw Error("validateCoordinates() was given an out-of-range x-coordinate");
+            throw new Error("validateCoordinates() was given an out-of-range x-coordinate");
         if (0 > coordY)
-            throw Error("validateCoordinates() was given a negative y-coordinate");
+            throw new Error("validateCoordinates() was given a negative y-coordinate");
         if (coordY >= this.tilesPerSide)
-            throw Error("validateCoordinates() was given an out-of-range xy-coordinate");
+            throw new Error("validateCoordinates() was given an out-of-range xy-coordinate");
     }
 
     getCoordinates(posX, posY) {
@@ -72,9 +72,9 @@ class GridModel {
         const yGridOffset = rect.top;
 
         if ((0 > posX - xGridOffset) || (posX - xGridOffset > this.gridLength))
-            throw Error("getCoordinates() received posX out-of-range");
+            throw new Error("getCoordinates() received posX out-of-range");
         if ((0 > posY - yGridOffset) || (posY - yGridOffset > this.gridLength))
-            throw Error("getCoordinates() received posY out-of-range");
+            throw new Error("getCoordinates() received posY out-of-range");
 
         return {
             x : Math.floor((posX - xGridOffset) / this.tileLength),
@@ -101,7 +101,7 @@ class GridModel {
         /// requires: 0 <= coordX, coordY < maxNumTiles
         
         if (!this.isValidTileCode(tileCode))
-            throw Error("removeActor() was given an invalid tileCode");
+            throw new Error("removeActor() was given an invalid tileCode");
         this.validateCoordinates(coordX, coordY);
 
         this.actorsGrid[coordY][coordX] = tileCode;
@@ -212,7 +212,7 @@ class GridModel {
         /// requires: 0 <= coordX, coordY < this.tilesPerSide
         
         if (!this.isValidTileCode(tilecode))
-            throw Error("removeActor() was given an invalid tileCode");
+            throw new Error("removeActor() was given an invalid tileCode");
 
         return this.getActor(coordX, coordY) == tilecode;
     }
