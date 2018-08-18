@@ -11,7 +11,7 @@ class MinotaurModel extends GameActor {
     constructor(name) {
         super(name, 2);
 
-        $(this.node).attr("id", "monster")
+        $(this.node).attr("id", "minotaur")
                     .attr("z-index", "10");
     }
 }

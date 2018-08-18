@@ -12,6 +12,9 @@
 let gridModel = new GridModel();
 gridModel.node = $("#grid")[0]
 
+/// List of GameActors that act when the Player's turn is over.
+let enemyActors = [];
+
 
 ///////////////// DISPLAYING ELEMENTS /////////////////
 
@@ -40,7 +43,9 @@ function readMazeLayout(layout) {
                 gridModel.addNodeReference(wall.node, x, y);
 
             } else if (gridModel.getActor(x, y) == 'M') {
-                alert("Minotaur has not been implemented yet.");
+                let minotaur = new MinotaurModel("Moo-moo");
+                enemyActors.push(minotaur);
+                gridModel.addNodeReference(minotaur.node, x, y);
 
             }
         }
@@ -57,8 +62,8 @@ function displayNode(newNode, coordX, coordY) {
     ///          modifies main.html.
 
     $(newNode).css("top", 50 * coordY + "px")
-            .css("left", 50 * coordX + "px")
-            .appendTo("#grid");
+              .css("left", 50 * coordX + "px")
+              .appendTo("#grid");
 }
 
 function displayGrid() {
@@ -103,7 +108,7 @@ var layout =
 ["N", "N", "N", "N", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "W"],
 ["N", "N", "N", "N", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N", "N", "W", "W", "W", "W"],
 ["N", "W", "W", "W", "W", "W", "W", "W", "W", "N", "N", "W", "W", "W", "W", "N", "N", "N", "N", "N"],
-["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "W", "N", "N", "N"],
+["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "W", "M", "N", "N"],
 ["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "W", "N", "N", "N"],
 ["N", "W", "N", "N", "N", "N", "N", "W", "W", "N", "N", "W", "W", "N", "W", "N", "W", "N", "N", "N"],
 ["N", "W", "W", "N", "W", "W", "W", "W", "N", "N", "N", "N", "W", "W", "W", "N", "W", "W", "W", "W"],
