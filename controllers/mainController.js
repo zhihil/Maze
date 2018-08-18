@@ -218,25 +218,23 @@ function actorMove(targetX, targetY, direcX, direcY) {
 
 //////////////////////////////////////////////////// GAME LOGIC ////////////////////////////////////////////////////
 
-function evaluateMinotaurStatus() {
-    /// Returns information about the state of the Minotaur enemy. 
-    /// evaluteMinotaurStatus: void -> { bool }
+function playerNearEnemy() {
+    /// Determines if the player is in a space one tile away from the
+    ///     enemy.
+    /// playerNearEnemy: void -> bool
 
-    return {
-        dead : !gridModel.monster.isAlive(),
-    }
-
+    const pos = gridModel.monster.getPosition(gridModel);
+    if      (pos.x - 1 >= 0                      &&  gridModel.getActor(pos.x - 1, pos.y) === "P")
+        return true;
+    else if (pos.x + 1 < gridModel.tilesPerSide  &&  gridModel.getActor(pos.x + 1, pos.y) === "P")
+        return true;
+    else if (pos.y - 1 >= 0                      &&  gridModel.getActor(pos.x, pos.y - 1) === "P")
+        return true;
+    else if (pos.y + 1 < gridModel.tilesPerSide  &&  gridModel.getActor(pos.x, pos.y + 1) === "P")
+        return true;
+    return false;
+    
 }
-
-function evaluatePlayerStatus() {
-    /// Returns information about the state of the player.
-    /// evalutePlayerStatus: void -> { bool }
-
-    return {
-        dead : !gridModel.player.isAlive(),
-    }
-}
-
 
 //////////////////////////////////////////////////// MINOTAUR MOVEMENT ////////////////////////////////////////////////////
 
@@ -248,36 +246,73 @@ function evaluatePlayerStatus() {
 
 $("#grid").on("click", function(event) {
 
+    /// Check Player status
+    if (gridModel.player === null) 
+    {
+        /// Player is dead.
+
+        alert("Placeholder: Player dead!");
+        return;
+    }
+
+
     /// Player's turn
     const target    = gridModel.getCoordinates(event.clientX, event.clientY);
-    let playerModel = gridModel.player;
-
     if (gridModel.isOccupiedBy('M', target.x, target.y))
     {
         /// Attack the monster.
 
+        alert("Placeholder: Player attacks!");
         gridModel.monster.takeDamage(gridModel.player.attack);
     }
-    else if (!playerModel.moving && isValidMove.call(playerModel, target.x, target.y))
+    else if (!gridModel.player.moving && isValidMove.call(gridModel.player, target.x, target.y))
     {
         /// Move the player.
 
-        const playerPos = playerModel.getPosition(gridModel);
+        const playerPos = gridModel.player.getPosition(gridModel);
         const diff      = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
 
-        actorMove.call(playerModel, target.x, target.y, diff[0], diff[1]);
+        actorMove.call(gridModel.player, target.x, target.y, diff[0], diff[1]);
     }
 
-    /// Enemy Turns
-    let minotaurStatus = evaluateMinotaurStatus();
 
-    if (minotaurStatus.dead) {
+    /// Check Enemy Status
+
+    if (gridModel.monster !== null && !gridModel.monster.isAlive()) {
         let minotaurPos = gridModel.monster.getPosition(gridModel);
         $(gridModel.getNodeReference(minotaurPos.x, minotaurPos.y)).remove();
         gridModel.removeComplete(minotaurPos.x, minotaurPos.y);
     }
 
-    let playerStatus = evaluatePlayerStatus();
+    if (gridModel.monster === null) 
+    {
+        /// Monster is dead.
+
+        alert("Placeholder: Monster dead!");
+        return;
+    }
+
+
+    /// Minotaur Turn
+    if (playerNearEnemy())
+    {
+        /// Attack the Player 
+
+        alert("Placeholder: Monster attacks!");
+        gridModel.player.takeDamage(gridModel.monster.attack);
+    }
+    else
+    {
+        /// Move the Monster.
+    }
+
+
+    /// Check Player status
+    if (gridModel.player !== null && !gridModel.player.isAlive()) {
+        const playerPos = gridModel.player.getPosition(gridModel);
+        $(gridModel.getNodeReference(playerPos.x, playerPos.y)).remove();
+        gridModel.removeComplete(playerPos.x, playerPos.y);
+    }
 });
 
 $("#loadButton").on("click", function() {
