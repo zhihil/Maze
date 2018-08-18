@@ -40,4 +40,11 @@ class GameActor {
         this.node.style.left = 50 * coordX + "px";
         this.node.style.top  = 50 * coordY + "px";
     }
+
+    isAlive() {
+        /// Determines if the GameActor is alive or not.
+        /// isAlive: void -> bool
+        
+        return this.health > 0;
+    }
 }
