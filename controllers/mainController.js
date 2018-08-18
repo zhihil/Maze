@@ -70,9 +70,9 @@ function displayGrid() {
     {
         for (let x = 0; x < gridModel.tilesPerSide; ++x)
         {
-            if (gridModel.canvas[y][x] !== null)
+            if (gridModel.getNodeReference(x, y) !== null)
             {
-                displayNode(gridModel.canvas[y][x], x, y);
+                displayNode(gridModel.getNodeReference(x, y));
             }
         }
     }
@@ -86,9 +86,9 @@ function clearGrid() {
     {
         for (let x = 0; x < gridModel.tilesPerSide; ++x) 
         {
-            if (gridModel.canvas[y][x] !== null)
+            if (gridModel.getNodeReference(x, y) !== null)
             {
-                $(gridModel.canvas[y][x]).remove();
+                $(gridModel.getNodeReference(x, y)).remove();
             }
         }
     }
@@ -220,12 +220,23 @@ function actorMove(targetX, targetY, direcX, direcY) {
 
 ///////////////// GAME LOGIC /////////////////
 
-function EvaluateEnemyStatus() {
+function evaluateMinotaurStatus() {
+    /// Returns information about the state of the Minotaur enemy. 
+    /// evaluteMinotaurStatus: void -> { bool }
+
+    return {
+        dead : !gridModel.monster.isAlive(),
+    }
 
 }
 
-function EvalutePlayerStatus() {
+function evaluatePlayerStatus() {
+    /// Returns information about the state of the player.
+    /// evalutePlayerStatus: void -> { bool }
 
+    return {
+        dead : !gridModel.player.isAlive(),
+    }
 }
 
 
@@ -254,10 +265,15 @@ $("#grid").on("click", function(event) {
     }
 
     /// Enemy Turns
+    let minotaurStatus = evaluateMinotaurStatus();
 
-    EvaluateEnemyStatus();
+    if (minotaurStatus.dead) {
+        let minotaurPos = gridModel.monster.getPosition();
+        $(gridModel.getNodeReference(minotaurPos.x, minotaurPos.y)).remove();
+        gridModel.removeComplete(minotaurPos.x, minotaurPos.y);
+    }
 
-    EvalutePlayerStatus();
+    let playerStatus = evaluatePlayerStatus();
 });
 
 $("#loadButton").on("click", function() {

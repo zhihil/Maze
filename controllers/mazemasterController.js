@@ -19,7 +19,7 @@ mazemasterModel.palette['P'] = function(coordX, coordY) {
     /// anon: int int -> void
     /// requires: 0 <= coordX, coordY < this.tilesPerSide
 
-    if (this.tileCount['P'] === 0 && this.canvas[coordY][coordX] === null)
+    if (this.tileCount['P'] === 0 && this.getNodeReference(x, y) === null)
     {
         this.addActor('P', coordX, coordY);
         this.player = new PlayerModel("Theseus");
@@ -27,7 +27,7 @@ mazemasterModel.palette['P'] = function(coordX, coordY) {
                            .css("top", (50 * coordY) + "px")
                            .css("z-index", 10)
                            .appendTo("#grid");
-        this.canvas[coordY][coordX] = this.player.node;
+        this.getNodeReference(x, y) = this.player.node;
         this.incrementTile(this.paintbrushTile);
     }
 }.bind(mazemasterModel);
@@ -39,24 +39,24 @@ mazemasterModel.palette['W'] = function(coordX, coordY) {
     /// anon : int int -> void
     /// requires: 0 <= coordX, coordY < this.tilesPerSide
 
-    if (this.canvas[coordY][coordX] === null)
+    if (this.getNodeReference(coordX, coordY) === null)
     {
         this.addActor('W', coordX, coordY);
         let newWall = new Wall(coordX, coordY);
         $(newWall.node).css("left", (50 * coordX) + "px")
                             .css("top", (50 * coordY) + "px")
                             .appendTo("#grid");
-        this.canvas[coordY][coordX] = newWall.node;
+        this.getNodeReference(coordX, coordY)= newWall.node;
         this.incrementTile(this.paintbrushTile);
     }
 }.bind(mazemasterModel);
 
 mazemasterModel.palette['N'] = function(coordX, coordY) {
-    if (this.canvas[coordY][coordX] !== null)
+    if (this.getNodeReference(coordX, coordY) !== null)
     {
-        $(this.canvas[coordY][coordX]).remove();
+        $(this.getNodeReference(coordX, coordY)).remove();
         this.decrementTile(this.getActor(coordX, coordY));
-        this.canvas[coordY][coordX] = null;
+        this.getNodeReference(coordX, coordY) = null;
         this.removeActor(coordX, coordY);
     }
 }.bind(mazemasterModel);
