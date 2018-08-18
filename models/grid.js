@@ -46,6 +46,20 @@ class GridModel {
         }
     }
 
+    validateCoordinates(coordX, coordY) {
+        /// Checks that the given position (coordX, coordY) is within bounds of the grid.
+        /// validateCoordinates: int int-> void
+
+        if (0 > coordX)
+            throw Error("validateCoordinates() was given a negative x-coordinate");
+        if (coordX >= this.tilesPerSide)
+            throw Error("validateCoordinates() was given an out-of-range x-coordinate");
+        if (0 > coordY)
+            throw Error("validateCoordinates() was given a negative y-coordinate");
+        if (coordY >= this.tilesPerSide)
+            throw Error("validateCoordinates() was given an out-of-range xy-coordinate");
+    }
+
     getCoordinates(posX, posY) {
         /// Given the absolute position (posX, posY) in pixels, calculate the
         ///   the coordinates of the position relative to #grid's origin (top-left corner)
@@ -88,14 +102,7 @@ class GridModel {
         
         if (!this.isValidTileCode(tileCode))
             throw Error("removeActor() was given an invalid tileCode");
-        if (0 > coordX)
-            throw Error("removeActor() was given a negative x-coordinate");
-        if (coordX >= this.tilesPerSide)
-            throw Error("removeActor() was given an out-of-range x-coordinate");
-        if (0 > coordY)
-            throw Error("removeActor() was given a negative y-coordinate");
-        if (coordY >= this.tilesPerSide)
-            throw Error("removeActor() was given an out-of-range y-coordinate");
+        this.validateCoordinates(coordX, coordY);
 
         this.actorsGrid[coordY][coordX] = tileCode;
     }
@@ -115,14 +122,7 @@ class GridModel {
         /// removeActor: int int -> void
         /// requires: 0 <= coordX, coordY < maxNumTiles
 
-        if (0 > coordX)
-            throw Error(".getActor() was given a negative x-coordinate");
-        if (coordX >= this.tilesPerSide)
-            throw Error("getActor() was given an out-of-range x-coordinate");
-        if (0 > coordY)
-            throw Error("getActor() was given a negative y-coordinate");
-        if (coordY >= this.tilesPerSide)
-            throw Error("getActor() was given an out-of-range y-coordinate");
+        this.validateCoordinates(coordX, coordY);
 
         return this.actorsGrid[coordY][coordX];
     }
@@ -137,24 +137,56 @@ class GridModel {
     }
 
     addNodeReference(newNode, coordX, coordY) {
-        /// Adds a new node reference for canvas at (coordX, coordY).
+        /// Adds a new node reference at(coordX, coordY) of canvas.
         /// addNodeReference: DOMNode int int ->void
         /// requires: 0 <= coordX, coordY < this.tilesPerSide
         ///           newNode != null, undefined 
         /// time: O(1)
         /// effects: modifies this.canvas
 
+        this.validateCoordinates(coordX, coordY);
         this.canvas[coordY][coordX] = newNode;
     }
 
     removeNodeReference(coordX, coordY) {
-        /// Sets the node reference of canvas at (coordX, coordY) to null.
+        /// Sets the node reference at (coordX, coordY) of canvas to null.
         /// removeNodeReference: int int -> void
         /// requires: 0 <= coordX, coordY < this.tilesPerSide
         /// time: O(1)
         /// effects: modifies this.canvas
         
         this.addNodeReference(null, coordX, coordY);
+    }
+
+    getNodeReference(coordX, coordY) {
+        /// Returns the node reference at (coordX, coordY) of canvas.
+        /// getNodeRederence: int int -> void
+        /// requires: 0 <= coordX, coordY < this.tilesPerSide
+
+        this.validateCoordinates(coordX, coordY);
+        return this.canvas[coordY][coordX];
+    }
+
+    addComplete(tilecode, newnode, coordX, coordY) {
+        /// Adds both the tilecode and the DOM Node to grid at the specified
+        ///     coordinates (coordX, coorY).
+        /// requires: tilecode DOMNode int int -> void;
+        /// requires: 0 <= coordX, coordY < this.tilesPerSide
+        ///           newnode has the correct tilecode.
+
+        this.addNodeReference(newnode, coordX, coordY);
+        this.addActor(tilecode, coordX, coordY);
+    }
+
+    removeComplete(coordX, coordY) {
+        /// Removes both the node reference on canvas and actor tile on actorsGrid
+        ///     of the specified tile at (coordX, coordY)
+        /// removeEntirely: int int -> void
+        /// requires: 0 <= coordX, coordY < this.tilesPerSide
+        /// effects: modifies canvas and actorsGrid
+
+        this.removeNodeReference(coordX, coordY);
+        this.removeActor(coordX, coordY);
     }
     
     resetActorsGrid() {
