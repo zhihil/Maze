@@ -29,7 +29,7 @@ function readMazeLayout(layout) {
             
             if (gridModel.getActor(x, y) == 'N') {
                 gridModel.removeNodeReference(x, y);
-                
+
             }
             else if (gridModel.getActor(x, y) == 'P') {
                 gridModel.player = new PlayerModel("Theseus");
@@ -141,7 +141,7 @@ function isValidMove(targetX, targetY) {
 
     if (gridModel.isOccupied(targetX, targetY)) return false;
 
-    const actorPos = this.getPosition();
+    const actorPos = this.getPosition(gridModel);
     const diffX = targetX - actorPos.x;
     const diffY = targetY - actorPos.y;
     if (Math.abs(diffX) == 1 && diffY == 0)
@@ -172,7 +172,7 @@ function actorMove(targetX, targetY, direcX, direcY) {
     const targetTop  = targetY * gridModel.tileLength + offset.top; 
 
     /// Get the Actor's origin position
-    const actorPos = this.getPosition();
+    const actorPos = this.getPosition(gridModel);
     
     /// Define the function that performs the animation logic. 
     let animationFunc = function() {
@@ -199,7 +199,7 @@ function actorMove(targetX, targetY, direcX, direcY) {
 
             /// Make sure the Actor is in the proper position programmatically. 
             gridModel.removeActor(actorPos.x, actorPos.y);
-            const newPos = this.getPosition();
+            const newPos = this.getPosition(gridModel);
             gridModel.addActor('P', newPos.x, newPos.y);
 
             /// Make sure the Actor's DOM Node reference in gridModel.canvas is correct.
@@ -225,7 +225,7 @@ $("#grid").on("click", function(event) {
     let playerModel = gridModel.player;
     if (!playerModel.moving && isValidMove.call(playerModel, target.x, target.y))
     {
-        const playerPos = playerModel.getPosition();
+        const playerPos = playerModel.getPosition(gridModel);
         const diff = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
         actorMove.call(playerModel, target.x, target.y, diff[0], diff[1]);
     }

@@ -22,19 +22,20 @@ class GameActor {
 
     ////////////////////////// Methods //////////////////////////
 
-    getPosition() {
+    getPosition(referenceGrid) {
         /// Gets the GameActor's position in terms of coordinates on #grid
         /// getPosition : void -> { int, int }
 
         const rect = this.node.getBoundingClientRect();
-        return gridModel.getCoordinates(rect.left, rect.top);
+        return getCoordinates.call(referenceGrid, rect.left, rect.top);
     }
 
     setPosition(coordX, coordY) {
         /// Sets the GameActor's graphical position to the place corresponding
         ///   with the given (coordX, coordY).
         /// setPosition : int int -> void
-        let offsetRect = gridModel.node.getBoundingClientRect();
+        /// requires: node has been attached to some kind of #grid object.
+
         this.node.style.left = 50 * coordX + "px";
         this.node.style.top  = 50 * coordY + "px";
     }
