@@ -12,7 +12,7 @@ class GridModel {
     constructor() {
         this.gridLength = 1000;
         this.tileLength = 50;
-        this.node = document.getElementById("grid");
+        this.node = null;
         this.player = null;
         this.tilesPerSide = this.gridLength / this.tileLength;
 
@@ -45,6 +45,14 @@ class GridModel {
         }
     }
 
+    setGridNode(id) {
+        /// Sets GridModel's node property to id.
+        /// setGridNode: string -> void
+        /// requires: id must include the # prefix
+
+        this.node = document.getElementById(id);
+    }
+
     getCoordinates(posX, posY) {
         /// Given the absolute position (posX, posY) in pixels, calculate the
         ///   the coordinates of the position relative to #grid's origin (top-left corner)
@@ -67,10 +75,22 @@ class GridModel {
         };
     }
 
+    isValidTileCode(code) {
+        /// Determines if the given code is an example of a tileCode. A valid tileCode is
+        ///   one of:
+        ///     - 'N' - Null
+        ///     - 'P' - Player
+        ///     - 'M' - Monster or Minotaur
+        ///     - 'W' - Wall
+        ///     - 'T' - Treasure (Fleece)
+
+        return code === 'N' || code === 'P' || code === 'M' || code === 'W' || code === 'T';
+    }
+
     addActor(tileCode, coordX, coordY) {
         /// Adds a newActor at (coordX, coordY), where (0, 0) is the top-left square on
         ///   the board and the positive axis go downward and rightward.
-        /// addActor: tileCode (this.isValidTileCode) int int -> void
+        /// addActor: tileCode (see this.isValidTileCode) int int -> void
         /// requires: 0 <= coordX, coordY < maxNumTiles
         
         if (!this.isValidTileCode(tileCode))
@@ -84,19 +104,7 @@ class GridModel {
         if (coordY >= this.tilesPerSide)
             throw Error("removeActor() was given an out-of-range y-coordinate");
 
-            this.actorsGrid[coordY][coordX] = tileCode;
-    }
-    
-    isValidTileCode(code) {
-        /// Determines if the given code is an example of a tileCode. A valid tileCode is
-        ///   one of:
-        ///     - 'N' - Null
-        ///     - 'P' - Player
-        ///     - 'M' - Monster or Minotaur
-        ///     - 'W' - Wall
-        ///     - 'T' - Treasure (Fleece)
-
-        return code === 'N' || code === 'P' || code === 'M' || code === 'W' || code === 'T';
+        this.actorsGrid[coordY][coordX] = tileCode;
     }
 
     removeActor(coordX, coordY) {
@@ -105,16 +113,7 @@ class GridModel {
         /// removeActor: int int -> void
         /// requires: 0 <= coordX, coordY < maxNumTiles
 
-        if (0 > coordX)
-            throw Error("removeActor() was given a negative x-coordinate");
-        if (coordX >= this.tilesPerSide)
-            throw Error("removeActor() was given an out-of-range x-coordinate");
-        if (0 > coordY)
-            throw Error("removeActor() was given a negative y-coordinate");
-        if (coordY >= this.tilesPerSide)
-            throw Error("removeActor() was given an out-of-range y-coordinate");
-
-            this.actorsGrid[coordY][coordX] = 'N';
+        this.addActor('N', coordX, coordY);
     }
 
     getActor(coordX, coordY) {
@@ -135,28 +134,6 @@ class GridModel {
         return this.actorsGrid[coordY][coordX];
     }
 
-    isOccupied(coordX, coordY) {
-    /// Determines if the chosen tile (coordX, coordY) on the grid is occupied or not.
-    /// isOccupied: int int -> bool
-    /// requires: 0 <= coordX, coordY < this.tilesPerSide
-
-        if (0 > coordX || coordX >= this.tilesPerSide)
-            throw Error("this.isOccupied() received x out-of-range.");
-        if (0 > coordY || coordY >= this.tilesPerSide)
-            throw Error("this.isOccupied() received y out-of-range.");
-
-        return this.actorsGrid[coordY][coordX] != 'N';
-    }
-
-    removeNodeReference(coordX, coordY) {
-        /// Sets the node reference of canvas at (coordX, coordY) to null.
-        /// removeNodeReference: int int -> void
-        /// requires: 0 <= coordX, coordY < this.tilesPerSide
-        /// time: O(1)
-        /// effects: modifies this.canvas
-        this.canvas[coordY][coordX] = null;
-    }
-
     addNodeReference(newNode, coordX, coordY) {
         /// Adds a new node reference for canvas at (coordX, coordY).
         /// addNodeReference: DOMNode int int ->void
@@ -168,53 +145,32 @@ class GridModel {
         this.canvas[coordY][coordX] = newNode;
     }
 
-    detachNode(coordX, coordY) {
-        /// Removes the DOM Node at (coordX, coordY) from the DOM Node.
-        /// detachNode: int int -> void
+    removeNodeReference(coordX, coordY) {
+        /// Sets the node reference of canvas at (coordX, coordY) to null.
+        /// removeNodeReference: int int -> void
         /// requires: 0 <= coordX, coordY < this.tilesPerSide
         /// time: O(1)
         /// effects: modifies this.canvas
-        ///          modifies main.html.
-
-        if (this.canvas[coordY][coordX] !== null)
-        {
-            $(this.canvas[coordY][coordX]).remove();
-        }
-        this.removeNodeReference(coordX, coordY);
+        
+        this.addNodeReference(null, coordX, coordY);
     }
-
-    addNode(newNode, coordX, coordY) {
-        /// Adds the given DOM Node to (coordX, coordY) of canvas..
-        /// detachNode: DOMNode int int -> void
-        /// requires: 0 <= coordX, coordY < this.tilesPerSide
-        ///           newNode != null, undefined
-        /// time: O(1)
-        /// effects: modifies this.canvas
-        ///          modifies main.html.
-
-        this.addNodeReference(newNode, coordX, coordY);
-        $(newNode).css("top", 50 * coordY + "px")
-                .css("left", 50 * coordX + "px")
-                .appendTo("#grid");
-    }
-
+    
     resetActorsGrid() {
-        /// Sets all elements in actorsGrid to tileCode 'N' and removes
-        ///   all game tiles from view.
+        /// Sets all elements in actorsGrid to tileCode 'N'.
         /// resetActorsGrid: void -> void
         /// time: O(N^2) : N = this.tilesPerSide
         /// effects: modifies this.actorsGrid
-
+    
         for (let y = 0; y < this.tilesPerSide; ++y) {
             for (let x = 0; x < this.tilesPerSide; ++x) {
                 if (this.actorsGrid[y][x] == 'P') 
                     this.player = null;
                 this.removeActor(x, y);
-                this.detachNode(x, y);
+                this.removeNodeReference(x, y);
             }
         }
     }
-
+    
     readMazeLayout(layout) {
         /// Fills the this's actorsGrid with the elements specified in
         ///   layout.
@@ -222,23 +178,22 @@ class GridModel {
         /// requires: layout is a square grid with length this.tilesPerSide
         /// time: O(N^2) : N = this.tilesPerSide
         /// effects: modifies this.actorsGrid
-
-        this.resetActorsGrid();
+    
         for (let y = 0; y < layout.length; ++y) {
             for (let x = 0; x < layout.length; ++x) {
                 this.addActor(layout[y][x], x, y);
-
+    
                 if (this.getActor(x, y) == 'P') {
                     this.player = new PlayerModel("Theseus");
-                    this.addNode(this.player.node, x, y);
-
+                    this.addNodeReference(this.player.node, x, y);
+    
                 } else if (this.getActor(x, y) == 'W') {
                     let wall = new Wall(x, y);
-                    this.addNode(wall.node, x, y);
-
+                    this.addNodeReference(wall.node, x, y);
+    
                 } else if (this.getActor(x, y) == 'M') {
                     alert("Minotaur has not been implemented yet.");
-
+    
                 }
             }
         }
