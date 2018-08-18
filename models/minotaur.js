@@ -7,7 +7,7 @@
 ///
 //////////////////////////////////////////////////////////////////////
 
-class MonsterModel extends GameActor {
+class MinotaurModel extends GameActor {
     constructor(name) {
         super(name, 2);
 
