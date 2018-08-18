@@ -300,6 +300,7 @@ $("#grid").on("click", function(event) {
         let minotaurPos = gridModel.monster.getPosition(gridModel);
         $(gridModel.getNodeReference(minotaurPos.x, minotaurPos.y)).remove();
         gridModel.removeComplete(minotaurPos.x, minotaurPos.y);
+        gridModel.monster = null;
     }
 
     if (gridModel.monster === null) 
@@ -330,6 +331,7 @@ $("#grid").on("click", function(event) {
         const playerPos = gridModel.player.getPosition(gridModel);
         $(gridModel.getNodeReference(playerPos.x, playerPos.y)).remove();
         gridModel.removeComplete(playerPos.x, playerPos.y);
+        gridMode.player = null;
     }
 });
 
