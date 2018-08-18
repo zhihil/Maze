@@ -27,7 +27,7 @@ class GameActor {
         /// getPosition : void -> { int, int }
 
         const rect = this.node.getBoundingClientRect();
-        return getCoordinates.call(referenceGrid, rect.left, rect.top);
+        return referenceGrid.getCoordinates(rect.left, rect.top);
     }
 
     setPosition(coordX, coordY) {
