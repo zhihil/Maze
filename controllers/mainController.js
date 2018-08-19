@@ -395,16 +395,11 @@ function acquirePath() {
 
 $("#grid").on("click", function(event) {
 
+    /// Game is done.
     if (win) return;
 
-    /// Check Player status
-    if (playerModel === null) 
-    {
-        /// Player is dead.
-
-        alert("Placeholder: Player dead!");
-        return;
-    }
+    /// Player is dead.
+    if (playerModel === null) return;
 
 
     /// Player's turn
@@ -413,13 +408,13 @@ $("#grid").on("click", function(event) {
     {
         /// Attack the monster.
 
-        alert("Placeholder: Player attacks!");
         minotaurModel.takeDamage(playerModel.attack);
+        alert("Placeholder: Player attacks!");
     }
     else if (gridModel.isOccupiedBy('T', target.x, target.y)) 
     {
-        alert("You Win!");
         win = true;
+        alert("You Win!");
     }
     else if (!playerModel.moving && isValidMove.call(playerModel, target.x, target.y))
     {
@@ -438,18 +433,16 @@ $("#grid").on("click", function(event) {
         $(gridModel.getNodeReference(minotaurPos.x, minotaurPos.y)).remove();
         gridModel.removeComplete(minotaurPos.x, minotaurPos.y);
         minotaurModel = null;
+
+        alert("Placeholder: Monster dead!");
     } else if (turnsSinceAcquire === acquireCooldown) {
         turnsSinceAcquire = 0;
         monsterMovement = acquirePath();
     }
 
-    if (minotaurModel === null) 
-    {
-        /// Monster is dead.
 
-        alert("Placeholder: Monster dead!");
-        return;
-    }
+    /// Monster is dead.
+    if (minotaurModel === null) return;
 
 
     /// Minotaur Turn
@@ -461,7 +454,14 @@ $("#grid").on("click", function(event) {
         turnsSinceAcquire += 1;
         playerModel.takeDamage(minotaurModel.attack);
     }
-    else
+    else if (monsterMovement.length == 0)
+    {
+        /// Reacquire the player.
+
+        turnsSinceAcquire = 0;
+        monsterMovement = acquirePath();
+    }
+    else 
     {
         /// Move the Monster.
 
@@ -478,6 +478,8 @@ $("#grid").on("click", function(event) {
         $(gridModel.getNodeReference(playerPos.x, playerPos.y)).remove();
         gridModel.removeComplete(playerPos.x, playerPos.y);
         playerModel = null;
+
+        alert("Placeholder: Player dead!");
     }
 });
 
