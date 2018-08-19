@@ -150,7 +150,7 @@ function isValidMove(targetX, targetY) {
     return false;
 }
 
-function actorMove(targetX, targetY, direcX, direcY) {
+function actorMove(actorTile, targetX, targetY, direcX, direcY) {
     /// Animates the GameActor's movement from their starting tile to a
     ///   selected tile (targetX, targetY), assuming the vector of 
     ///   their movement is (direcX, direcY)
@@ -198,7 +198,7 @@ function actorMove(targetX, targetY, direcX, direcY) {
             /// Make sure the Actor is in the proper position programmatically. 
             gridModel.removeActor(actorPos.x, actorPos.y);
             const newPos = this.getPosition(gridModel);
-            gridModel.addActor('P', newPos.x, newPos.y);
+            gridModel.addActor(actorTile, newPos.x, newPos.y);
 
             /// Make sure the Actor's DOM Node reference in gridModel.canvas is correct.
             gridModel.removeNodeReference(actorPos.x, actorPos.y);
@@ -241,7 +241,7 @@ function playerNearEnemy() {
 /// Contains functions used by the Minotaur to find a path to the player and follow it.
 
 /// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
-let monsterMovement = [];
+let monsterMovement = acquirePath();
 
 /// Used to track when minotaur acquires player position.
 let turnsSinceAcquire = 0;
@@ -383,12 +383,12 @@ function acquirePath() {
     let n2 = curNode;
     let n1 = curNode.parent;
     while (n1 !== null) {
-        path.shift({
-            dx : n2.x - n1.x, 
-            dy : n2.y - n1.y
+        path.unshift({
+            dx : n2.pos.x - n1.pos.x, 
+            dy : n2.pos.y - n1.pos.y
         })
         n2 = n1;
-        n1 = curNode.parent;
+        n1 = n1.parent;
     };
 
     return path;
@@ -425,17 +425,19 @@ $("#grid").on("click", function(event) {
         const playerPos = gridModel.player.getPosition(gridModel);
         const diff      = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
 
-        actorMove.call(gridModel.player, target.x, target.y, diff[0], diff[1]);
+        actorMove.call(gridModel.player, "P", target.x, target.y, diff[0], diff[1]);
     }
 
 
     /// Check Enemy Status
-
     if (gridModel.monster !== null && !gridModel.monster.isAlive()) {
         let minotaurPos = gridModel.monster.getPosition(gridModel);
         $(gridModel.getNodeReference(minotaurPos.x, minotaurPos.y)).remove();
         gridModel.removeComplete(minotaurPos.x, minotaurPos.y);
         gridModel.monster = null;
+    } else if (turnsSinceAcquire === acquireCooldown) {
+        turnsSinceAcquire = 0;
+        monsterMovement = acquirePath();
     }
 
     if (gridModel.monster === null) 
@@ -453,11 +455,17 @@ $("#grid").on("click", function(event) {
         /// Attack the Player 
 
         alert("Placeholder: Monster attacks!");
+        turnsSinceAcquire += 1;
         gridModel.player.takeDamage(gridModel.monster.attack);
     }
     else
     {
         /// Move the Monster.
+
+        turnsSinceAcquire += 1;
+        let move = monsterMovement.shift();
+        let monsterPos = gridModel.monster.getPosition(gridModel);
+        actorMove.call(gridModel.monster, "M", monsterPos.x + move.dx, monsterPos.y + move.dy, move.dx, move.dy);
     }
 
 
@@ -466,7 +474,7 @@ $("#grid").on("click", function(event) {
         const playerPos = gridModel.player.getPosition(gridModel);
         $(gridModel.getNodeReference(playerPos.x, playerPos.y)).remove();
         gridModel.removeComplete(playerPos.x, playerPos.y);
-        gridMode.player = null;
+        gridModel.player = null;
     }
 });
 
