@@ -9,15 +9,12 @@
 
 //////////////////////////////////////////////////// SETTING UP THE MODELS /////////////////////////////////////////////////////////////////////
 
-
 let gridModel = new GridModel();
-gridModel.node = $("#grid")[0];
+gridModel.node = $("#grid")[0]; 
 
 let playerModel = null;
 let minotaurModel = null;
 let treasureModel = null;
-
-let win = false;
 
 
 //////////////////////////////////////////////////// DISPLAYING ELEMENTS ////////////////////////////////////////////////////
@@ -245,50 +242,6 @@ function MoveNode(x, y) {
 
 function acquirePath() {
 
-    /// Strategy : 
-
-    /// In order to find the shortest path the Minotaur would take to reach the player,
-    ///     we can apply Breadth-First Search (BFS).
-    /// At any moment, the Program State does not give information on which route leads 
-    ///     to the Player, so we are forced to track every single route. 
-    /// One way to represent all possible routes is with a Tree. This tree has :
-    ///     - Multiple children
-    ///     - Nodes that represent a coordinate pair on the grid.
-    ///     - A root that is "empty" or has "no movement"
-    /// As we move along the graph via BFS, we can construct this Tree.
-    /// If we start from a leaf and move all the way up to the root. Then this traversal
-    ///     gives us the shortest path from the Minotaur to the Player. Then if the Player's
-    ///     tile is a leaf in this tree, doing the traversal gives us the required shortest
-    ///     path.
-    /// The leaves of this tree is equivalent to the queue used in BFS. So we need to
-    ///     iterate through all the leaves and add adjacent tiles to the tree, until we
-    ///     find the player.
-    
-    /// Assumptions:
-    ///     1. The Minotaur can reach the Player. That is, the Player and Minotaur are
-    ///         not located on two disconnected grpahs.
-    
-    /// The procedure:
-    ///
-    /// Node: [ Need a Node object ] 
-    ///  - { coordX : x, coordY : y }
-    ///  - Parent node
-    ///  - Child nodes
-    ///
-    /// Initiaization:
-    ///     - Put in the Minotaur's initial position as a Node object into the queue.
-    ///
-    /// Loop:
-    ///     - Dequeue to node       [ Need a queue ]
-    ///     - Mark node as visited. [ Need a visited array ] 
-    ///     - If the current Node's tile is a 'P', then stop the loop.
-    ///     - Enqueue node's neighbours as Nodes    [ Need a enqueueing helper function ]
-    ///   
-    /// Recurse:
-    ///     - Starting from the current Node (which should correspond to 'P') recurse up parents.
-    ///     - Store two positions: p1 and p2. Find their difference and use addMovement to enqueue this value.
-    ///     - Stop when parent == null
-
     let visited = new Array(gridModel.tilesPerSide);
     for (let y = 0; y < gridModel.tilesPerSide; ++y)
     {
@@ -367,19 +320,35 @@ function acquirePath() {
     return path;
 }
 
+
 //////////////////////////////////////////////////// INITIALIZE GAME ////////////////////////////////////////////////////
 
-/// Read and display layout.
+/// Display a checkboard pattern.
 makeCheckerBoard();
-readMazeLayout(layout);
-displayGrid();
+
+/// Game state parameters.
+let win = false;
 
 /// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
-let monsterMovement = acquirePath();
+let monsterMovement = [];
 
 /// Used to track when minotaur acquires player position.
 let turnsSinceAcquire = 0;
 const acquireCooldown = 3;
+
+/// Used to load an instance of the game.
+function initialise(layoutToLoad) {
+    clearGrid();
+    readMazeLayout(layoutToLoad);
+    displayGrid();
+    win = false;
+    monsterMovement = acquirePath();
+    turnsSinceAcquire = 0;
+}
+
+/// Initialise the default layout.
+initialise(layout);
+
 
 //////////////////////////////////////////////////// EVENT LISTENERS ////////////////////////////////////////////////////
 
@@ -479,13 +448,5 @@ $("#grid").on("click", function(event) {
 });
 
 $("#loadButton").on("click", function() {
-    clearGrid();
-    readMazeLayout(JSON.parse(localStorage["mazeSavedCustomMap"]));
-    displayGrid();
-
-    win = false;
-
-    /// Make sure we aren't using the path from the old map onto the new one.
-    monsterMovement = acquirePath();
+    initialise(JSON.parse(localStorage["mazeSavedCustomMap"]));
 });
-
