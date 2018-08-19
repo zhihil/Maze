@@ -9,6 +9,7 @@
 
 //////////////////////////////////////////////////// SETTING UP THE MODELS /////////////////////////////////////////////////////////////////////
 
+
 let gridModel = new GridModel();
 gridModel.node = $("#grid")[0];
 
@@ -35,14 +36,13 @@ function readMazeLayout(layout) {
             
             if (gridModel.getActor(x, y) == 'N') {
                 gridModel.removeNodeReference(x, y);
-
             }
             else if (gridModel.getActor(x, y) == 'P') {
                 playerModel = new PlayerModel("Theseus");
                 gridModel.addNodeReference(playerModel.node, x, y);
 
             } else if (gridModel.getActor(x, y) == 'W') {
-                let wall = new Wall(x, y);
+                let wall = new Wall("Dungeon Wall");
                 gridModel.addNodeReference(wall.node, x, y);
 
             } else if (gridModel.getActor(x, y) == 'M') {
@@ -52,24 +52,11 @@ function readMazeLayout(layout) {
             } else if (gridModel.getActor(x, y) == "T") {
                 treasureModel = new TreasureModel("Golden Fleece");
                 gridModel.addNodeReference(treasureModel.node, x, y);
+                
 
             }
         }
     }
-}
-
-function displayNode(newNode, coordX, coordY) {
-    /// Adds the given DOM Node to (coordX, coordY) of canvas..
-    /// detachNode: DOMNode int int -> void
-    /// requires: 0 <= coordX, coordY < this.tilesPerSide
-    ///           newNode != null, undefined
-    /// time: O(1)
-    /// effects: modifies this.canvas
-    ///          modifies main.html.
-
-    $(newNode).css("top", 50 * coordY + "px")
-              .css("left", 50 * coordX + "px")
-              .appendTo("#grid");
 }
 
 function displayGrid() {
@@ -82,7 +69,9 @@ function displayGrid() {
         {
             if (gridModel.getNodeReference(x, y) !== null)
             {
-                displayNode(gridModel.getNodeReference(x, y), x, y);
+                $(gridModel.getNodeReference(x, y)).css("top", 50 * y + "px")
+                                                   .css("left", 50 * x + "px")
+                                                   .appendTo("#grid");
             }
         }
     }
@@ -129,11 +118,6 @@ var layout =
 ["N", "N", "N", "N", "N", "N", "W", "N", "W", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N"]
 ]
 
-/// Read and display layout.
-makeCheckerBoard();
-readMazeLayout(layout);
-displayGrid();
-
 
 //////////////////////////////////////////////////// MOVEMENT ////////////////////////////////////////////////////
 
@@ -144,9 +128,9 @@ function isValidMove(targetX, targetY) {
     /// requires: gridModel.tilesPerSide > targetX, targetY >= 0
 
     if ((0 > targetX) || (targetX >= gridModel.tilesPerSide))
-        throw new Error("isValidMove() received targetX out-of-range");
+        return false;
     if ((0 > targetY) || (targetY >= gridModel.tilesPerSide))
-        throw new Error("isValidMove() received targetY out-of-range");
+        return false;
 
     if (gridModel.isOccupied(targetX, targetY)) return false;
 
@@ -249,13 +233,6 @@ function playerNearEnemy() {
 //////////////////////////////////////////////////// MINOTAUR MOVEMENT ////////////////////////////////////////////////////
 
 /// Contains functions used by the Minotaur to find a path to the player and follow it.
-
-/// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
-let monsterMovement = acquirePath();
-
-/// Used to track when minotaur acquires player position.
-let turnsSinceAcquire = 0;
-const acquireCooldown = 3;
 
 function MoveNode(x, y) {
     this.pos = { 
@@ -390,6 +367,19 @@ function acquirePath() {
     return path;
 }
 
+//////////////////////////////////////////////////// INITIALIZE GAME ////////////////////////////////////////////////////
+
+/// Read and display layout.
+makeCheckerBoard();
+readMazeLayout(layout);
+displayGrid();
+
+/// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
+let monsterMovement = acquirePath();
+
+/// Used to track when minotaur acquires player position.
+let turnsSinceAcquire = 0;
+const acquireCooldown = 3;
 
 //////////////////////////////////////////////////// EVENT LISTENERS ////////////////////////////////////////////////////
 
@@ -404,7 +394,12 @@ $("#grid").on("click", function(event) {
 
     /// Player's turn
     const target    = gridModel.getCoordinates(event.clientX, event.clientY);
-    if (gridModel.isOccupiedBy('M', target.x, target.y))
+    if (playerModel.moving || !isValidMove.call(playerModel, target.x, target.y))
+    {
+        alert("Invalid move.");
+        return;
+    }
+    else if (gridModel.isOccupiedBy('M', target.x, target.y))
     {
         /// Attack the monster.
 
@@ -416,7 +411,7 @@ $("#grid").on("click", function(event) {
         win = true;
         alert("You Win!");
     }
-    else if (!playerModel.moving && isValidMove.call(playerModel, target.x, target.y))
+    else
     {
         /// Move the player.
 
