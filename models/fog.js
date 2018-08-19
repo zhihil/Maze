@@ -37,7 +37,7 @@ class FogModel {
 
         for (let coord of coordinates) {
             if (coord.x < 0 || coord.x >= this.tilesPerSide) continue;
-            else if (coord.y < 0 || coord.y >= this.tileLength) continue;
+            else if (coord.y < 0 || coord.y >= this.tilesPerSide) continue;
 
             if (this.fogTiles[coord.y][coord.x] === null) {
                 this.fogTiles[coord.y][coord.x] = new FogTile();
@@ -50,10 +50,10 @@ class FogModel {
         /// reveal: Arrayof({ x : int, y : int }) -> void
         /// time: O(n) : n is the length of coordinates
         /// effects: modifies this.fogTiles.
-
+        
         for (let coord of coordinates) {
             if (coord.x < 0 || coord.x >= this.tilesPerSide) continue;
-            else if (coord.y < 0 || coord.y >= this.tileLength) continue;
+            else if (coord.y < 0 || coord.y >= this.tilesPerSide) continue;
             
             if (this.fogTiles[coord.y][coord.x] !== null) {
                 this.fogTiles[coord.y][coord.x] = null;
