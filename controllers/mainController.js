@@ -243,6 +243,10 @@ function playerNearEnemy() {
 /// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
 let monsterMovement = [];
 
+/// Used to track when minotaur acquires player position.
+let turnsSinceAcquire = 0;
+const acquireCooldown = 3;
+
 function addMovement(x, y) {
     /// Adds a new direction object { dx : x , dy : y } to the beginning of monsterMovement.
     /// addMovement: int int -> void
@@ -257,6 +261,137 @@ function addMovement(x, y) {
     else if (x != 0 && y != 0)
         throw new Error("addMovement was given an invalid movement pair");
     monsterMovement.unshift({ dx : x, dy : y});
+}
+
+function MoveNode(x, y) {
+    this.pos = { 
+        x : x, 
+        y : y
+    };
+    this.parent = null;
+    this.children = [];
+}
+
+function acquirePath() {
+
+    /// Strategy : 
+
+    /// In order to find the shortest path the Minotaur would take to reach the player,
+    ///     we can apply Breadth-First Search (BFS).
+    /// At any moment, the Program State does not give information on which route leads 
+    ///     to the Player, so we are forced to track every single route. 
+    /// One way to represent all possible routes is with a Tree. This tree has :
+    ///     - Multiple children
+    ///     - Nodes that represent a coordinate pair on the grid.
+    ///     - A root that is "empty" or has "no movement"
+    /// As we move along the graph via BFS, we can construct this Tree.
+    /// If we start from a leaf and move all the way up to the root. Then this traversal
+    ///     gives us the shortest path from the Minotaur to the Player. Then if the Player's
+    ///     tile is a leaf in this tree, doing the traversal gives us the required shortest
+    ///     path.
+    /// The leaves of this tree is equivalent to the queue used in BFS. So we need to
+    ///     iterate through all the leaves and add adjacent tiles to the tree, until we
+    ///     find the player.
+    
+    /// Assumptions:
+    ///     1. The Minotaur can reach the Player. That is, the Player and Minotaur are
+    ///         not located on two disconnected grpahs.
+    
+    /// The procedure:
+    ///
+    /// Node: [ Need a Node object ] 
+    ///  - { coordX : x, coordY : y }
+    ///  - Parent node
+    ///  - Child nodes
+    ///
+    /// Initiaization:
+    ///     - Put in the Minotaur's initial position as a Node object into the queue.
+    ///
+    /// Loop:
+    ///     - Dequeue to node       [ Need a queue ]
+    ///     - Mark node as visited. [ Need a visited array ] 
+    ///     - If the current Node's tile is a 'P', then stop the loop.
+    ///     - Enqueue node's neighbours as Nodes    [ Need a enqueueing helper function ]
+    ///   
+    /// Recurse:
+    ///     - Starting from the current Node (which should correspond to 'P') recurse up parents.
+    ///     - Store two positions: p1 and p2. Find their difference and use addMovement to enqueue this value.
+    ///     - Stop when parent == null
+
+    let visited = new Array(gridModel.tilesPerSide);
+    for (let y = 0; y < gridModel.tilesPerSide; ++y)
+    {
+        visited[y] = new Array(gridModel.tilesPerSide);
+        for (let x = 0; x < gridModel.tilesPerSide; ++x)
+        {
+            visited[y][x] = false;
+        }
+    }
+
+    let monsterPos = gridModel.monster.getPosition(gridModel);
+    let queue = [new MoveNode(monsterPos.x, monsterPos.y)];
+    visited[monsterPos.y][monsterPos.x] = true;
+
+    let isValidNeighbor = (neighX, neighY) => {
+        /// Determines if the tile specified at (neighX, neighY) is a valid
+        ///     neighbour to the given node. Assuming that the tile specified
+        ///     shares a side with the tile of node.
+        /// isValidNeighbour: int int -> bool
+        /// requires: node != null
+
+        return 0 <= neighX && neighX < gridModel.tilesPerSide &&
+               0 <= neighY && neighY < gridModel.tilesPerSide &&
+               !visited[neighY][neighX] && 
+               gridModel.getActor(neighX, neighY) != "W";
+    }
+
+    let getNeighbors = (node) => {
+        /// Returns a list of neighbours to node.
+
+        let neighborsList = [];
+        if (isValidNeighbor(node.pos.x - 1, node.pos.y)) {
+            neighborsList.push(new MoveNode(node.pos.x - 1, node.pos.y));
+        }
+        if (isValidNeighbor(node.pos.x + 1, node.pos.y)) {
+            neighborsList.push(new MoveNode(node.pos.x + 1, node.pos.y));
+        }
+        if (isValidNeighbor(node.pos.x, node.pos.y - 1)) {
+            neighborsList.push(new MoveNode(node.pos.x, node.pos.y - 1));
+        }
+        if (isValidNeighbor(node.pos.x, node.pos.y + 1)) {
+            neighborsList.push(new MoveNode(node.pos.x, node.pos.y + 1));
+        }
+
+        return neighborsList;
+    }
+
+    let curNode = null;
+    do {
+        curNode = queue.shift();
+
+        let neighbors = getNeighbors(curNode);
+        curNode.children = neighbors;
+
+        for (let neighbor of neighbors) {
+            visited[neighbor.pos.y][neighbor.pos.x] = true
+            neighbor.parent = curNode;
+            queue.push(neighbor);
+        }
+    } while (gridModel.getActor(curNode.pos.x, curNode.pos.y) !== "P");
+
+    let path = [];
+    let n2 = curNode;
+    let n1 = curNode.parent;
+    while (n1 !== null) {
+        path.shift({
+            dx : n2.x - n1.x, 
+            dy : n2.y - n1.y
+        })
+        n2 = n1;
+        n1 = curNode.parent;
+    };
+
+    return path;
 }
 
 
