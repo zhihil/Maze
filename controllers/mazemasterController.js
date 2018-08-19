@@ -9,6 +9,10 @@
 
 ////////////////////// SETTING UP MODELS //////////////////////
 
+let playerModel = null;
+let treasureModel = null;
+let minotaurModel = null;
+
 /// Add the associated models.
 let mazemasterModel = new MazemasterModel();
 mazemasterModel.node = $("#grid")[0];
@@ -22,12 +26,12 @@ mazemasterModel.palette['P'] = function(coordX, coordY) {
     if (this.tileCount['P'] === 0 && this.getNodeReference(coordX, coordY) === null)
     {
         this.addActor('P', coordX, coordY);
-        this.player = new PlayerModel("Theseus");
-        $(this.player.node).css("left", (50 * coordX) + "px")
+        playerModel = new PlayerModel("Theseus");
+        $(playerModel.node).css("left", (50 * coordX) + "px")
                            .css("top", (50 * coordY) + "px")
                            .css("z-index", 10)
                            .appendTo("#grid");
-        this.addNodeReference(this.player.node, coordX, coordY);
+        this.addNodeReference(playerModel.node, coordX, coordY);
         this.incrementTile(this.paintbrushTile);
     }
 }.bind(mazemasterModel);
@@ -59,12 +63,12 @@ mazemasterModel.palette['M'] = function(coordX, coordY) {
     if (this.tileCount['M'] === 0 && this.getNodeReference(coordX, coordY) === null)
     {
         this.addActor("M", coordX, coordY);
-        this.monster = new MinotaurModel("Moo-moo");
-        $(this.monster.node).css("left", (50 * coordX) + "px")
+        minotaurModel = new MinotaurModel("Moo-moo");
+        $(minotaurModel.node).css("left", (50 * coordX) + "px")
                             .css("top", (50 * coordY) + "px")
                             .css("z-index", 10)
                             .appendTo("#grid");
-        this.addNodeReference(this.monster.node, coordX, coordY);
+        this.addNodeReference(minotaurModel.node, coordX, coordY);
         this.incrementTile(this.paintbrushTile);
     }
 }.bind(mazemasterModel);
