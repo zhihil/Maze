@@ -10,7 +10,11 @@
 //////////////////////////////////////////////////// SETTING UP THE MODELS /////////////////////////////////////////////////////////////////////
 
 let gridModel = new GridModel();
-gridModel.node = $("#grid")[0];
+gridModel.node = $("#grid")[0]; 
+
+let playerModel = null;
+let minotaurModel = null;
+let treasureModel = null;
 
 
 //////////////////////////////////////////////////// DISPLAYING ELEMENTS ////////////////////////////////////////////////////
@@ -29,37 +33,27 @@ function readMazeLayout(layout) {
             
             if (gridModel.getActor(x, y) == 'N') {
                 gridModel.removeNodeReference(x, y);
-
             }
             else if (gridModel.getActor(x, y) == 'P') {
-                gridModel.player = new PlayerModel("Theseus");
-                gridModel.addNodeReference(gridModel.player.node, x, y);
+                playerModel = new PlayerModel("Theseus");
+                gridModel.addNodeReference(playerModel.node, x, y);
 
             } else if (gridModel.getActor(x, y) == 'W') {
-                let wall = new Wall(x, y);
+                let wall = new Wall("Dungeon Wall");
                 gridModel.addNodeReference(wall.node, x, y);
 
             } else if (gridModel.getActor(x, y) == 'M') {
-                gridModel.monster = new MinotaurModel("Moo-moo");
-                gridModel.addNodeReference(gridModel.monster.node, x, y);
+                minotaurModel = new MinotaurModel("Moo-moo");
+                gridModel.addNodeReference(minotaurModel.node, x, y);
+
+            } else if (gridModel.getActor(x, y) == "T") {
+                treasureModel = new TreasureModel("Golden Fleece");
+                gridModel.addNodeReference(treasureModel.node, x, y);
+                
 
             }
         }
     }
-}
-
-function displayNode(newNode, coordX, coordY) {
-    /// Adds the given DOM Node to (coordX, coordY) of canvas..
-    /// detachNode: DOMNode int int -> void
-    /// requires: 0 <= coordX, coordY < this.tilesPerSide
-    ///           newNode != null, undefined
-    /// time: O(1)
-    /// effects: modifies this.canvas
-    ///          modifies main.html.
-
-    $(newNode).css("top", 50 * coordY + "px")
-              .css("left", 50 * coordX + "px")
-              .appendTo("#grid");
 }
 
 function displayGrid() {
@@ -72,7 +66,9 @@ function displayGrid() {
         {
             if (gridModel.getNodeReference(x, y) !== null)
             {
-                displayNode(gridModel.getNodeReference(x, y), x, y);
+                $(gridModel.getNodeReference(x, y)).css("top", 50 * y + "px")
+                                                   .css("left", 50 * x + "px")
+                                                   .appendTo("#grid");
             }
         }
     }
@@ -101,7 +97,7 @@ var layout =
 ["N", "N", "N", "N", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "W"],
 ["N", "N", "N", "N", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N", "N", "W", "W", "W", "W"],
 ["N", "W", "W", "W", "W", "W", "W", "W", "W", "N", "N", "W", "W", "W", "W", "N", "N", "N", "N", "N"],
-["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "W", "M", "N", "N"],
+["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "T", "M", "N", "N"],
 ["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "W", "N", "N", "N"],
 ["N", "W", "N", "N", "N", "N", "N", "W", "W", "N", "N", "W", "W", "N", "W", "N", "W", "N", "N", "N"],
 ["N", "W", "W", "N", "W", "W", "W", "W", "N", "N", "N", "N", "W", "W", "W", "N", "W", "W", "W", "W"],
@@ -119,11 +115,6 @@ var layout =
 ["N", "N", "N", "N", "N", "N", "W", "N", "W", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N"]
 ]
 
-/// Read and display layout.
-makeCheckerBoard();
-readMazeLayout(layout);
-displayGrid();
-
 
 //////////////////////////////////////////////////// MOVEMENT ////////////////////////////////////////////////////
 
@@ -134,9 +125,9 @@ function isValidMove(targetX, targetY) {
     /// requires: gridModel.tilesPerSide > targetX, targetY >= 0
 
     if ((0 > targetX) || (targetX >= gridModel.tilesPerSide))
-        throw new Error("isValidMove() received targetX out-of-range");
+        return false;
     if ((0 > targetY) || (targetY >= gridModel.tilesPerSide))
-        throw new Error("isValidMove() received targetY out-of-range");
+        return false;
 
     if (gridModel.isOccupied(targetX, targetY)) return false;
 
@@ -223,7 +214,7 @@ function playerNearEnemy() {
     ///     enemy.
     /// playerNearEnemy: void -> bool
 
-    const pos = gridModel.monster.getPosition(gridModel);
+    const pos = minotaurModel.getPosition(gridModel);
     if      (pos.x - 1 >= 0                      &&  gridModel.getActor(pos.x - 1, pos.y) === "P")
         return true;
     else if (pos.x + 1 < gridModel.tilesPerSide  &&  gridModel.getActor(pos.x + 1, pos.y) === "P")
@@ -240,29 +231,6 @@ function playerNearEnemy() {
 
 /// Contains functions used by the Minotaur to find a path to the player and follow it.
 
-/// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
-let monsterMovement = acquirePath();
-
-/// Used to track when minotaur acquires player position.
-let turnsSinceAcquire = 0;
-const acquireCooldown = 3;
-
-function addMovement(x, y) {
-    /// Adds a new direction object { dx : x , dy : y } to the beginning of monsterMovement.
-    /// addMovement: int int -> void
-    /// requires: -1 <= x, y <= 1
-    ///           one of x, y must be 0, one is not 0.
-    /// effects: modifies monsterMovement
-
-    if (x < -1 || x > 1) 
-        throw new Error("addMovement was given invalid x");
-    else if (y < -1 || y > 1)
-        throw new Error("addMovement was given invalid y");
-    else if (x != 0 && y != 0)
-        throw new Error("addMovement was given an invalid movement pair");
-    monsterMovement.unshift({ dx : x, dy : y});
-}
-
 function MoveNode(x, y) {
     this.pos = { 
         x : x, 
@@ -274,50 +242,6 @@ function MoveNode(x, y) {
 
 function acquirePath() {
 
-    /// Strategy : 
-
-    /// In order to find the shortest path the Minotaur would take to reach the player,
-    ///     we can apply Breadth-First Search (BFS).
-    /// At any moment, the Program State does not give information on which route leads 
-    ///     to the Player, so we are forced to track every single route. 
-    /// One way to represent all possible routes is with a Tree. This tree has :
-    ///     - Multiple children
-    ///     - Nodes that represent a coordinate pair on the grid.
-    ///     - A root that is "empty" or has "no movement"
-    /// As we move along the graph via BFS, we can construct this Tree.
-    /// If we start from a leaf and move all the way up to the root. Then this traversal
-    ///     gives us the shortest path from the Minotaur to the Player. Then if the Player's
-    ///     tile is a leaf in this tree, doing the traversal gives us the required shortest
-    ///     path.
-    /// The leaves of this tree is equivalent to the queue used in BFS. So we need to
-    ///     iterate through all the leaves and add adjacent tiles to the tree, until we
-    ///     find the player.
-    
-    /// Assumptions:
-    ///     1. The Minotaur can reach the Player. That is, the Player and Minotaur are
-    ///         not located on two disconnected grpahs.
-    
-    /// The procedure:
-    ///
-    /// Node: [ Need a Node object ] 
-    ///  - { coordX : x, coordY : y }
-    ///  - Parent node
-    ///  - Child nodes
-    ///
-    /// Initiaization:
-    ///     - Put in the Minotaur's initial position as a Node object into the queue.
-    ///
-    /// Loop:
-    ///     - Dequeue to node       [ Need a queue ]
-    ///     - Mark node as visited. [ Need a visited array ] 
-    ///     - If the current Node's tile is a 'P', then stop the loop.
-    ///     - Enqueue node's neighbours as Nodes    [ Need a enqueueing helper function ]
-    ///   
-    /// Recurse:
-    ///     - Starting from the current Node (which should correspond to 'P') recurse up parents.
-    ///     - Store two positions: p1 and p2. Find their difference and use addMovement to enqueue this value.
-    ///     - Stop when parent == null
-
     let visited = new Array(gridModel.tilesPerSide);
     for (let y = 0; y < gridModel.tilesPerSide; ++y)
     {
@@ -328,7 +252,7 @@ function acquirePath() {
         }
     }
 
-    let monsterPos = gridModel.monster.getPosition(gridModel);
+    let monsterPos = minotaurModel.getPosition(gridModel);
     let queue = [new MoveNode(monsterPos.x, monsterPos.y)];
     visited[monsterPos.y][monsterPos.x] = true;
 
@@ -342,7 +266,8 @@ function acquirePath() {
         return 0 <= neighX && neighX < gridModel.tilesPerSide &&
                0 <= neighY && neighY < gridModel.tilesPerSide &&
                !visited[neighY][neighX] && 
-               gridModel.getActor(neighX, neighY) != "W";
+               !gridModel.isOccupiedBy('W', neighX, neighY) &&
+               !gridModel.isOccupiedBy('T', neighX, neighY);
     }
 
     let getNeighbors = (node) => {
@@ -396,58 +321,92 @@ function acquirePath() {
 }
 
 
+//////////////////////////////////////////////////// INITIALIZE GAME ////////////////////////////////////////////////////
+
+/// Display a checkboard pattern.
+makeCheckerBoard();
+
+/// Game state parameters.
+let win = false;
+
+/// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
+let monsterMovement = [];
+
+/// Used to track when minotaur acquires player position.
+let turnsSinceAcquire = 0;
+const acquireCooldown = 3;
+
+/// Used to load an instance of the game.
+function initialise(layoutToLoad) {
+    clearGrid();
+    readMazeLayout(layoutToLoad);
+    displayGrid();
+    win = false;
+    monsterMovement = acquirePath();
+    turnsSinceAcquire = 0;
+}
+
+/// Initialise the default layout.
+initialise(layout);
+
+
 //////////////////////////////////////////////////// EVENT LISTENERS ////////////////////////////////////////////////////
 
 $("#grid").on("click", function(event) {
 
-    /// Check Player status
-    if (gridModel.player === null) 
-    {
-        /// Player is dead.
+    /// Game is done.
+    if (win) return;
 
-        alert("Placeholder: Player dead!");
-        return;
-    }
+    /// Player is dead.
+    if (playerModel === null) return;
 
 
     /// Player's turn
     const target    = gridModel.getCoordinates(event.clientX, event.clientY);
-    if (gridModel.isOccupiedBy('M', target.x, target.y))
+    if (playerModel.moving || !isValidMove.call(playerModel, target.x, target.y))
+    {
+        alert("Invalid move.");
+        return;
+    }
+    else if (gridModel.isOccupiedBy('M', target.x, target.y))
     {
         /// Attack the monster.
 
+        minotaurModel.takeDamage(playerModel.attack);
         alert("Placeholder: Player attacks!");
-        gridModel.monster.takeDamage(gridModel.player.attack);
     }
-    else if (!gridModel.player.moving && isValidMove.call(gridModel.player, target.x, target.y))
+    else if (gridModel.isOccupiedBy('T', target.x, target.y)) 
+    {
+        win = true;
+        alert("You Win!");
+    }
+    else
     {
         /// Move the player.
 
-        const playerPos = gridModel.player.getPosition(gridModel);
+        const playerPos = playerModel.getPosition(gridModel);
         const diff      = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
 
-        actorMove.call(gridModel.player, "P", target.x, target.y, diff[0], diff[1]);
+        actorMove.call(playerModel, "P", target.x, target.y, diff[0], diff[1]);
     }
 
 
     /// Check Enemy Status
-    if (gridModel.monster !== null && !gridModel.monster.isAlive()) {
-        let minotaurPos = gridModel.monster.getPosition(gridModel);
+    if (minotaurModel !== null && !minotaurModel.isAlive()) {
+        let minotaurPos = minotaurModel.getPosition(gridModel);
         $(gridModel.getNodeReference(minotaurPos.x, minotaurPos.y)).remove();
         gridModel.removeComplete(minotaurPos.x, minotaurPos.y);
-        gridModel.monster = null;
+        minotaurModel = null;
+
+        alert("Placeholder: Monster dead!");
     } else if (turnsSinceAcquire === acquireCooldown) {
         turnsSinceAcquire = 0;
         monsterMovement = acquirePath();
     }
 
-    if (gridModel.monster === null) 
-    {
-        /// Monster is dead.
 
-        alert("Placeholder: Monster dead!");
-        return;
-    }
+    /// Monster is dead.
+    if (minotaurModel === null) return;
 
 
     /// Minotaur Turn
@@ -457,34 +416,37 @@ $("#grid").on("click", function(event) {
 
         alert("Placeholder: Monster attacks!");
         turnsSinceAcquire += 1;
-        gridModel.player.takeDamage(gridModel.monster.attack);
+        playerModel.takeDamage(minotaurModel.attack);
     }
-    else
+    else if (monsterMovement.length == 0)
+    {
+        /// Reacquire the player.
+
+        turnsSinceAcquire = 0;
+        monsterMovement = acquirePath();
+    }
+    else 
     {
         /// Move the Monster.
 
         turnsSinceAcquire += 1;
         let move = monsterMovement.shift();
-        let monsterPos = gridModel.monster.getPosition(gridModel);
-        actorMove.call(gridModel.monster, "M", monsterPos.x + move.dx, monsterPos.y + move.dy, move.dx, move.dy);
+        let monsterPos = minotaurModel.getPosition(gridModel);
+        actorMove.call(minotaurModel, "M", monsterPos.x + move.dx, monsterPos.y + move.dy, move.dx, move.dy);
     }
 
 
     /// Check Player status
-    if (gridModel.player !== null && !gridModel.player.isAlive()) {
-        const playerPos = gridModel.player.getPosition(gridModel);
+    if (playerModel !== null && !playerModel.isAlive()) {
+        const playerPos = playerModel.getPosition(gridModel);
         $(gridModel.getNodeReference(playerPos.x, playerPos.y)).remove();
         gridModel.removeComplete(playerPos.x, playerPos.y);
-        gridModel.player = null;
+        playerModel = null;
+
+        alert("Placeholder: Player dead!");
     }
 });
 
 $("#loadButton").on("click", function() {
-    clearGrid();
-    readMazeLayout(JSON.parse(localStorage["mazeSavedCustomMap"]));
-    displayGrid();
-
-    /// Make sure we aren't using the path from the old map onto the new one.
-    monsterMovement = acquirePath();
+    initialise(JSON.parse(localStorage["mazeSavedCustomMap"]));
 });
-

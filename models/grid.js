@@ -13,8 +13,6 @@ class GridModel {
         this.gridLength   = 1000;
         this.tileLength   = 50;
         this.node         = null;
-        this.player       = null;
-        this.monster      = null;
         this.tilesPerSide = this.gridLength / this.tileLength;
 
 
@@ -197,8 +195,6 @@ class GridModel {
     
         for (let y = 0; y < this.tilesPerSide; ++y) {
             for (let x = 0; x < this.tilesPerSide; ++x) {
-                if (this.actorsGrid[y][x] == 'P') 
-                    this.player = null;
                 this.removeActor(x, y);
                 this.removeNodeReference(x, y);
             }
