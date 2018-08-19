@@ -73,6 +73,25 @@ mazemasterModel.palette['M'] = function(coordX, coordY) {
     }
 }.bind(mazemasterModel);
 
+mazemasterModel.palette['T'] = function(coordX, coordY) {
+    /// Adds a Treasure, the Golden Fleece, to this.actorsGrid and attaches it DOM
+    ///     Node to grid. 
+    /// mazemasterModel.palette["T"] : int int -> void
+    /// requires: 0 <= coordX, coordY < this.tilesPerSide
+
+    if (this.tileCount['T'] === 0 && this.getNodeReference(coordX, coordY) === null)
+    {
+        this.addActor("T", coordX, coordY);
+        treasureModel = new TreasureModel("Golden Fleece");
+        $(treasureModel.node).css("left", (50 * coordX) + "px")
+                            .css("top", (50 * coordY) + "px")
+                            .css("z-index", 10)
+                            .appendTo("#grid");
+        this.addNodeReference(treasureModel.node, coordX, coordY);
+        this.incrementTile(this.paintbrushTile);
+    }
+}.bind(mazemasterModel);
+
 mazemasterModel.palette['N'] = function(coordX, coordY) {
     /// Erases the tile at the specified coordinates (coordX, coordY)
     /// mazemasterModel.palette["N"] : int int -> void
