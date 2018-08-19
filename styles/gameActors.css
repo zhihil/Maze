@@ -2,24 +2,30 @@
     height: 50px;
     width: 50px;
     position: absolute;
+    z-index: 500;
 }
 
 #player {
     background: #0D8691;
+    z-index: 10;
 }
 
 #minotaur {
     background: rgb(117, 7, 7);
+    z-index: 9;
 }
 
 #wall {
     background: #031635;
+    z-index: 10;
 }
 
 #treasure {
     background: rgb(253, 218, 18);
+    z-index: 10;
 }
 
 #fog {
     background: #09001d42;
+    z-index: 20;
 }

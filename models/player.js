@@ -10,8 +10,7 @@ class PlayerModel extends AnimateObject {
     constructor(name) {
         super(name, 3, 1);
 
-        $(this.node).attr("id", "player")
-                    .css("z-index", "10");
+        $(this.node).attr("id", "player");
     }
 }
 
