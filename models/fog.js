@@ -129,8 +129,14 @@ class LightSource {
         this.x  = x;
         this.y  = y;
 
-        /// Default light shape.s
         this.lightShape = () => {
+            /// The default value for lightShape. Returns a list of coordinates of
+            ///     tiles relative to LightSource's current position (this.x, this.y)
+            ///     which is used to determine what part of fog is revealed.
+            
+            /// You can make your own custom lightShape function. The function must
+            ///     have the type ( void -> Arrayof({ x : int, y : int }) )
+
             let revealedTiles = [];
             for (let dx = -1; dx <= 1; ++dx) {
                 for (let dy = -1; dy <= 1; ++dy) {
