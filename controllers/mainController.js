@@ -136,6 +136,22 @@ function drawFog(fogTiles) {
     }
 }
 
+function clearFog(fogTiles) {
+    /// Removes the Fog of War based on the specifications of fogTiles
+    /// drawFog : Array(fogTile)[n][n]-> void
+    /// requires : fogTiles !== null
+    /// effects : Removes DOMNodes from the screen
+    /// time : O(n) : n is the tiles per side in the square matrix fogTiles.
+
+    for (let y = 0; y < fogTiles.length; ++y) {
+        for (let x = 0; x < fogTiles[y].length; ++x) {
+            if (fogTiles[y][x] !== null) {
+                $(fogTiles[y][x].node).remove();
+            }
+        }
+    }
+}
+
 //////////////////////////////////////////////////// MOVEMENT ////////////////////////////////////////////////////
 
 function isValidMove(targetX, targetY) {
@@ -367,6 +383,7 @@ function initialise(layoutToLoad) {
     /// Draw Fog of War
     let playerPos = playerModel.getPosition(gridModel);
 
+    clearFog(fogModel.fogTiles);
     if (!fogDrawn) {
         fogModel.addLightSource(new LightSource("player", playerPos.x, playerPos.y));
     } else if (fogModel.getLightSource("player") !== null) {
@@ -374,6 +391,7 @@ function initialise(layoutToLoad) {
     }
 
     drawFog(fogModel.fogTiles); 
+    fogDrawn = true;
 }
 
 /// Initialise the default layout.
@@ -418,6 +436,9 @@ $("#grid").on("click", function(event) {
         const diff      = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
 
         actorMove.call(playerModel, "P", target.x, target.y, diff[0], diff[1]);
+
+        fogModel.moveLightSource("player", playerPos.x, playerPos.y);
+        drawFog(fogModel.fogTiles);
     }
 
 
