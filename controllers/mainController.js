@@ -347,6 +347,7 @@ function acquirePath() {
 
     let getNeighbors = (node) => {
         /// Returns a list of neighbours to node.
+        /// getNeighbors : MoveNode -> Arrayof(MoveNode)
 
         let neighborsList = [];
         if (isValidNeighbor(node.pos.x - 1, node.pos.y)) {
