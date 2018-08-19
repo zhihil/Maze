@@ -129,8 +129,6 @@ function isValidMove(targetX, targetY) {
     if ((0 > targetY) || (targetY >= gridModel.tilesPerSide))
         return false;
 
-    if (gridModel.isOccupied(targetX, targetY)) return false;
-
     const actorPos = this.getPosition(gridModel);
     const diffX = targetX - actorPos.x;
     const diffY = targetY - actorPos.y;
@@ -363,7 +361,8 @@ $("#grid").on("click", function(event) {
 
     /// Player's turn
     const target    = gridModel.getCoordinates(event.clientX, event.clientY);
-    if (playerModel.moving || !isValidMove.call(playerModel, target.x, target.y))
+    if (playerModel.moving || !isValidMove.call(playerModel, target.x, target.y) ||
+        gridModel.isOccupiedBy('W', target.x, target.y))
     {
         alert("Invalid move.");
         return;
