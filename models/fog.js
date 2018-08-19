@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////
 
 class FogModel {
-    constructor(sideLength) {
+    constructor() {
         this.gridLength   = 1000;
         this.tileLength   = 50;
         this.tilesPerSide = this.gridLength / this.tileLength;
@@ -16,12 +16,12 @@ class FogModel {
         this.lightSources = [];
 
         /// Generate a 2D array of fog objects.
-        this.fogTiles = new Array(sideLength);
+        this.fogTiles = new Array(this.tilesPerSide);
 
-        for (let y = 0; y < sideLength; ++y) {
-            this.fogTiles[y] = new Array(sideLength);
+        for (let y = 0; y < this.tilesPerSide; ++y) {
+            this.fogTiles[y] = new Array(this.tilesPerSide);
 
-            for (let x = 0; x < sideLength; ++x) {
+            for (let x = 0; x < this.tilesPerSide; ++x) {
                 this.fogTiles[y][x] = new FogTile();
             }
         }
@@ -36,6 +36,9 @@ class FogModel {
         /// effects: modifies this.fogTiles.
 
         for (let coord of coordinates) {
+            if (coord.x < 0 || coord.x >= this.tilesPerSide) continue;
+            else if (coord.y < 0 || coord.y >= this.tileLength) continue;
+
             if (this.fogTiles[coord.y][coord.x] === null) {
                 this.fogTiles[coord.y][coord.x] = new FogTile();
             }
@@ -49,6 +52,9 @@ class FogModel {
         /// effects: modifies this.fogTiles.
 
         for (let coord of coordinates) {
+            if (coord.x < 0 || coord.x >= this.tilesPerSide) continue;
+            else if (coord.y < 0 || coord.y >= this.tileLength) continue;
+            
             if (this.fogTiles[coord.y][coord.x] !== null) {
                 this.fogTiles[coord.y][coord.x] = null;
             }

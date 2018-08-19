@@ -16,6 +16,9 @@ let playerModel = null;
 let minotaurModel = null;
 let treasureModel = null;
 
+/// Used for generating Fog of War
+let fogModel = new FogModel();
+
 
 //////////////////////////////////////////////////// DISPLAYING ELEMENTS ////////////////////////////////////////////////////
 
@@ -115,6 +118,23 @@ var layout =
 ["N", "N", "N", "N", "N", "N", "W", "N", "W", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N"]
 ]
 
+function drawFog(fogTiles) {
+    /// Draws the Fog of War based on the specifications of fogTiles
+    /// drawFog : Array(fogTile)[n][n]-> void
+    /// requires : fogTiles !== null
+    /// effects : Displays DOMNodes to the screen.
+    /// time : O(n) : n is the tiles per side in the square matrix fogTiles.
+
+    for (let y = 0; y < fogTiles.length; ++y) {
+        for (let x = 0; x < fogTiles[y].length; ++x) {
+            if (fogTiles[y][x] !== null) {
+                $(fogTiles[y][x].node).css("top", 50 * y + "px")
+                                      .css("left", 50 * x + "px")
+                                      .appendTo("#grid");
+            }
+        }
+    }
+}
 
 //////////////////////////////////////////////////// MOVEMENT ////////////////////////////////////////////////////
 
@@ -326,6 +346,7 @@ makeCheckerBoard();
 
 /// Game state parameters.
 let win = false;
+let fogDrawn = false;
 
 /// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
 let monsterMovement = [];
@@ -342,11 +363,21 @@ function initialise(layoutToLoad) {
     win = false;
     monsterMovement = acquirePath();
     turnsSinceAcquire = 0;
+
+    /// Draw Fog of War
+    let playerPos = playerModel.getPosition(gridModel);
+
+    if (!fogDrawn) {
+        fogModel.addLightSource(new LightSource("player", playerPos.x, playerPos.y));
+    } else if (fogModel.getLightSource("player") !== null) {
+        fogModel.moveLightSource("player", playerPos.x, playerPos.y);
+    }
+
+    drawFog(fogModel.fogTiles); 
 }
 
 /// Initialise the default layout.
 initialise(layout);
-
 
 //////////////////////////////////////////////////// EVENT LISTENERS ////////////////////////////////////////////////////
 
