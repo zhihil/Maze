@@ -12,6 +12,10 @@
 let gridModel = new GridModel();
 gridModel.node = $("#grid")[0];
 
+let treasureModel = null;
+
+let win = false;
+
 
 //////////////////////////////////////////////////// DISPLAYING ELEMENTS ////////////////////////////////////////////////////
 
@@ -42,6 +46,10 @@ function readMazeLayout(layout) {
             } else if (gridModel.getActor(x, y) == 'M') {
                 gridModel.monster = new MinotaurModel("Moo-moo");
                 gridModel.addNodeReference(gridModel.monster.node, x, y);
+
+            } else if (gridModel.getActor(x, y) == "T") {
+                treasureModel = new TreasureModel("Golden Fleece");
+                gridModel.addNodeReference(treasureModel.node, x, y);
 
             }
         }
@@ -101,7 +109,7 @@ var layout =
 ["N", "N", "N", "N", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "W"],
 ["N", "N", "N", "N", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N", "N", "W", "W", "W", "W"],
 ["N", "W", "W", "W", "W", "W", "W", "W", "W", "N", "N", "W", "W", "W", "W", "N", "N", "N", "N", "N"],
-["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "W", "M", "N", "N"],
+["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "T", "M", "N", "N"],
 ["N", "W", "N", "N", "N", "N", "N", "N", "W", "N", "N", "W", "N", "N", "W", "N", "W", "N", "N", "N"],
 ["N", "W", "N", "N", "N", "N", "N", "W", "W", "N", "N", "W", "W", "N", "W", "N", "W", "N", "N", "N"],
 ["N", "W", "W", "N", "W", "W", "W", "W", "N", "N", "N", "N", "W", "W", "W", "N", "W", "W", "W", "W"],
@@ -247,22 +255,6 @@ let monsterMovement = acquirePath();
 let turnsSinceAcquire = 0;
 const acquireCooldown = 3;
 
-function addMovement(x, y) {
-    /// Adds a new direction object { dx : x , dy : y } to the beginning of monsterMovement.
-    /// addMovement: int int -> void
-    /// requires: -1 <= x, y <= 1
-    ///           one of x, y must be 0, one is not 0.
-    /// effects: modifies monsterMovement
-
-    if (x < -1 || x > 1) 
-        throw new Error("addMovement was given invalid x");
-    else if (y < -1 || y > 1)
-        throw new Error("addMovement was given invalid y");
-    else if (x != 0 && y != 0)
-        throw new Error("addMovement was given an invalid movement pair");
-    monsterMovement.unshift({ dx : x, dy : y});
-}
-
 function MoveNode(x, y) {
     this.pos = { 
         x : x, 
@@ -342,7 +334,8 @@ function acquirePath() {
         return 0 <= neighX && neighX < gridModel.tilesPerSide &&
                0 <= neighY && neighY < gridModel.tilesPerSide &&
                !visited[neighY][neighX] && 
-               gridModel.getActor(neighX, neighY) != "W";
+               !gridModel.isOccupiedBy('W', neighX, neighY) &&
+               !gridModel.isOccupiedBy('T', neighX, neighY);
     }
 
     let getNeighbors = (node) => {
@@ -400,6 +393,8 @@ function acquirePath() {
 
 $("#grid").on("click", function(event) {
 
+    if (win) return;
+
     /// Check Player status
     if (gridModel.player === null) 
     {
@@ -418,6 +413,11 @@ $("#grid").on("click", function(event) {
 
         alert("Placeholder: Player attacks!");
         gridModel.monster.takeDamage(gridModel.player.attack);
+    }
+    else if (gridModel.isOccupiedBy('T', target.x, target.y)) 
+    {
+        alert("You Win!");
+        win = true;
     }
     else if (!gridModel.player.moving && isValidMove.call(gridModel.player, target.x, target.y))
     {
