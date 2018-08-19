@@ -483,5 +483,8 @@ $("#loadButton").on("click", function() {
     clearGrid();
     readMazeLayout(JSON.parse(localStorage["mazeSavedCustomMap"]));
     displayGrid();
+
+    /// Make sure we aren't using the path from the old map onto the new one.
+    monsterMovement = acquirePath();
 });
 
