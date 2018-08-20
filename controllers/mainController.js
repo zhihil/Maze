@@ -373,6 +373,10 @@ const acquireCooldown = 3;
 
 /// Used to load an instance of the game.
 function initialise(layoutToLoad) {
+    alert("Welcome to Maze. Click any square near the teal tile to move it.");
+    alert("Find the Treasure somewhere in this Maze.");
+    alert("Watch out. You are being hunted.");
+
     clearGrid();
     readMazeLayout(layoutToLoad);
     displayGrid();
@@ -437,7 +441,8 @@ $("#grid").on("click", function(event) {
 
         actorMove.call(playerModel, "P", target.x, target.y, diff[0], diff[1]);
 
-        fogModel.moveLightSource("player", playerPos.x, playerPos.y);
+        clearFog(fogModel.fogTiles);
+        fogModel.moveLightSource("player", playerPos.x + diff[0], playerPos.y + diff[1]);
         drawFog(fogModel.fogTiles);
     }
 
