@@ -16,6 +16,9 @@ let playerModel = null;
 let minotaurModel = null;
 let treasureModel = null;
 
+/// Used for generating Fog of War
+let fogModel = new FogModel();
+
 
 //////////////////////////////////////////////////// DISPLAYING ELEMENTS ////////////////////////////////////////////////////
 
@@ -115,6 +118,39 @@ var layout =
 ["N", "N", "N", "N", "N", "N", "W", "N", "W", "N", "N", "W", "N", "N", "N", "N", "N", "N", "N", "N"]
 ]
 
+function drawFog(fogTiles) {
+    /// Draws the Fog of War based on the specifications of fogTiles
+    /// drawFog : Array(fogTile)[n][n]-> void
+    /// requires : fogTiles !== null
+    /// effects : Displays DOMNodes to the screen.
+    /// time : O(n) : n is the tiles per side in the square matrix fogTiles.
+
+    for (let y = 0; y < fogTiles.length; ++y) {
+        for (let x = 0; x < fogTiles[y].length; ++x) {
+            if (fogTiles[y][x] !== null) {
+                $(fogTiles[y][x].node).css("top", 50 * y + "px")
+                                      .css("left", 50 * x + "px")
+                                      .appendTo("#grid");
+            }
+        }
+    }
+}
+
+function clearFog(fogTiles) {
+    /// Removes the Fog of War based on the specifications of fogTiles
+    /// drawFog : Array(fogTile)[n][n]-> void
+    /// requires : fogTiles !== null
+    /// effects : Removes DOMNodes from the screen
+    /// time : O(n) : n is the tiles per side in the square matrix fogTiles.
+
+    for (let y = 0; y < fogTiles.length; ++y) {
+        for (let x = 0; x < fogTiles[y].length; ++x) {
+            if (fogTiles[y][x] !== null) {
+                $(fogTiles[y][x].node).remove();
+            }
+        }
+    }
+}
 
 //////////////////////////////////////////////////// MOVEMENT ////////////////////////////////////////////////////
 
@@ -326,6 +362,7 @@ makeCheckerBoard();
 
 /// Game state parameters.
 let win = false;
+let fogDrawn = false;
 
 /// Stores an array of movements that the monster should take, e.g., [ { dx : 1, dy : 0 }, { dx : 0, dy : 1} ]
 let monsterMovement = [];
@@ -336,17 +373,33 @@ const acquireCooldown = 3;
 
 /// Used to load an instance of the game.
 function initialise(layoutToLoad) {
+    alert("Welcome to Maze. Click any square near the teal tile to move it.");
+    alert("Find the Treasure somewhere in this Maze.");
+    alert("Watch out. You are being hunted.");
+
     clearGrid();
     readMazeLayout(layoutToLoad);
     displayGrid();
     win = false;
     monsterMovement = acquirePath();
     turnsSinceAcquire = 0;
+
+    /// Draw Fog of War
+    let playerPos = playerModel.getPosition(gridModel);
+
+    clearFog(fogModel.fogTiles);
+    if (!fogDrawn) {
+        fogModel.addLightSource(new LightSource("player", playerPos.x, playerPos.y));
+    } else if (fogModel.getLightSource("player") !== null) {
+        fogModel.moveLightSource("player", playerPos.x, playerPos.y);
+    }
+
+    drawFog(fogModel.fogTiles); 
+    fogDrawn = true;
 }
 
 /// Initialise the default layout.
 initialise(layout);
-
 
 //////////////////////////////////////////////////// EVENT LISTENERS ////////////////////////////////////////////////////
 
@@ -387,6 +440,10 @@ $("#grid").on("click", function(event) {
         const diff      = getDiffVector([target.x, target.y], [playerPos.x, playerPos.y]);
 
         actorMove.call(playerModel, "P", target.x, target.y, diff[0], diff[1]);
+
+        clearFog(fogModel.fogTiles);
+        fogModel.moveLightSource("player", playerPos.x + diff[0], playerPos.y + diff[1]);
+        drawFog(fogModel.fogTiles);
     }
 
 

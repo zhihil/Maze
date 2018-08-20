@@ -11,7 +11,6 @@ class MinotaurModel extends AnimateObject {
     constructor(name) {
         super(name, 2, 1);
 
-        $(this.node).attr("id", "minotaur")
-                    .attr("z-index", "10");
+        $(this.node).attr("id", "minotaur");
     }
 }

@@ -1,0 +1,52 @@
+////////////////////////////////////// FogModel Design Overview //////////////////////////////////////
+
+//////////////////////////// Intended Audience ////////////////////////////
+
+- People who want basic Fog of War for square-tile based games on a square grid.
+
+
+//////////////////////////// As a user, what do I have time to care about? ////////////////////////////
+
+- Creating the FogModel.
+- Creating a LightSource
+- Manipulating the LightSource
+- Configuring the FogModel and the LightSource.
+
+
+//////////////////////////// What are the features and how to achieve it? ////////////////////////////
+
+- FEATURE : Modularity.
+    - FEATURE : Place it whereever I want.
+        - IMPLEMENT : FogModel will be the data representation of a "sheet of blackness" that dynamically
+                      changes, depending on what light sources are present.
+    - FEATURE : Configure the tile-size. to be whatever I want. 
+        - IMPLEMENT : Have tile-size be a property. Include a getter/setter to dynamically change
+                      FogModel. 
+    - FEATURE : Change the number of tiles in the grid.
+        - IMPLEMENT : Have grid length be a property. Include a getter/setter to dynamically change
+                      FogModel. 
+    - FEATURE : Create a LightSource object anywhere on the grid.
+    - FEATURE : Allow LightSource objects to produce different shaped light.
+        - IMPLEMENT : Add an abstract function for LightSource that produces a list of coordinates 
+                      that can be used by FogModel's shroud() or reveal() methods to hide or reveal
+                      tiles respectively.
+        - IMPLEMENT : Include default abstract functions and allow users to define their own crazy
+                      functions if needed.
+
+- FEATURE : Dynamic behavior
+    - IMPLEMENT : Implement a private Update() function that responds to changes made by public methods of
+                  FogModel.
+
+//////////////////////////// Check-list ////////////////////////////
+
+///// FogModel /////
+- Contains a list of DOM Nodes that will be drawn as shroud.  [ FogModel.fogTiles ]
+- tile-size getter/setter      (nice-to-have) *.update()
+- grid-length getter/setter    (nice-to-have) *.update()
+- tiles-per-side getter/setter (nice-to-have) *.update()
+- Ability to add LightSources to the Fog grid   [ FogModel.addLightSource(LightSource) *.shroud()]
+- Ability to reference LightSources by id       [ FogModel.GetLightSourceById() ] 
+    - Ability to move LightSources  [ LightSource.move(dx, dy) *.shroud() and *.reveal() ]
+    - Ability to change LightSource shape  [ LightSource.lightShape = (x, y) => Arrayof({ x : int, y : int }) ]
+    - .shroud(Arrayof({ x : int, y : int }))
+    - .reveal(Arrayof({ x : int, y : int }))
