@@ -1,9 +1,17 @@
 # Maze
 
-==================== How to Play ====================
+======================================== How to Play ========================================
 
 - Open main.html to play the game.
+    - Click the button to load a custom map from the browser's localStorage variable.
 - Open mazemaster.html to make your own maps.
+    - Click save and the map data will added to localStorage.
+    - When you run main.html again, your custom map will be retrieved from local storage
+
+
+
+
+======================================== Developer ========================================
 
 ==================== Chrome : List of Known Bugs ====================
 - audio tag in main.html does not play the minotaur roar.
